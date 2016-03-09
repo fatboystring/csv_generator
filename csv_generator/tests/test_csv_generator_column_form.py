@@ -2,14 +2,18 @@
 from __future__ import unicode_literals
 from csv_generator.forms import CsvGeneratorColumnForm
 from csv_generator.models import CsvGeneratorColumn
+from csv_generator.tests.utils import CsvGeneratorTestCase
 from django import forms
-from django.test import TestCase
 
 
-class CsvGeneratorColumnFormTestCase(TestCase):
+class CsvGeneratorColumnFormTestCase(CsvGeneratorTestCase):
     """
     Tests the CsvGeneratorForm
     """
+    def setUp(self):
+        super(CsvGeneratorColumnFormTestCase, self).setUp()
+        self.form = CsvGeneratorColumnForm(csv_generator=self.generator_1)
+
     def test_is_model_form(self):
         """
         The form should be a model form
@@ -21,3 +25,18 @@ class CsvGeneratorColumnFormTestCase(TestCase):
         The form should use the correct model
         """
         self.assertEqual(CsvGeneratorColumnForm._meta.model, CsvGeneratorColumn)
+
+    def test_model_field(self):
+        """
+        The 'model_field' field should be defined
+        """
+        field = self.form.fields['model_field']
+        self.assertIsInstance(field, forms.ChoiceField)
+        self.assertEqual(field.label, 'Field')
+        self.assertEqual(
+            field.choices,
+            map(
+                lambda x: (x.name, x.verbose_name),
+                self.generator_1.get_meta_class().fields
+            )
+        )
