@@ -9,7 +9,7 @@ class TestModel(models.Model):
     """
     title = models.CharField(
         max_length=255,
-        verbose_name='This is the title field'
+        verbose_name='Model title'
     )
     text = models.TextField()
     date_created = models.DateTimeField()
@@ -21,7 +21,7 @@ class TestModel2(models.Model):
     """
     title = models.CharField(
         max_length=255,
-        verbose_name='This is the title field'
+        verbose_name='Model title'
     )
     text = models.TextField()
     date_created = models.DateTimeField()
