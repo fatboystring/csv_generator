@@ -10,12 +10,4 @@ setup(name='csv_generator',
       url='https://github.com/fatboystring/csv_generator/',
       packages=find_packages(),
       license='License :: Public Domain',
-
-      # Enable django-setuptest
-      test_suite='setuptest.setuptest.SetupTestSuite',
-      tests_require=(
-        'django-setuptest',
-        # Required by django-setuptools on Python 2.6
-        'argparse'
-      ),
 )
