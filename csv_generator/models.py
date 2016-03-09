@@ -7,6 +7,24 @@ from django.db import models
 from django.utils.module_loading import import_string
 
 
+class CsvGeneratorQueryset(models.QuerySet):
+    """
+    QuerySet for CsvGenerator
+    """
+    def for_model(self, model):
+        """
+        Method to return a queryset of CsvGenerator
+        model instances for a given type of model
+
+        :param model: Model class or instance
+        :type model: django.db.models.Model
+
+        :return: QuerySet of CsvGenerator model instances
+        """
+        content_type = ContentType.objects.get_for_model(model)
+        return self.filter(content_type=content_type)
+
+
 class CsvGenerator(models.Model):
     """
     Model for storing a CSV Generator profile
@@ -16,6 +34,8 @@ class CsvGenerator(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
     content_type = models.ForeignKey(ContentType, related_name='+')
+
+    objects = CsvGeneratorQueryset.as_manager()
 
     def __unicode__(self):
         """

@@ -236,3 +236,30 @@ class CsvGeneratorGenerateModelTestCase(CsvGeneratorColumnTestCase):
         patched_method.return_value.writerow.assert_any_call(map(
             lambda x: unicode(getattr(self.instance_3, x, '')), field_names
         ))
+
+
+class CsvGeneratorQuerySetTestCase(CsvGeneratorTestCase):
+    """
+    Tests the CsvGenerator queryset methods
+    """
+    def setUp(self):
+        super(CsvGeneratorQuerySetTestCase, self).setUp()
+        CsvGenerator.objects.filter(pk__in=[
+            self.generator_1.pk,
+            self.generator_3.pk,
+            self.generator_5.pk
+        ]).update(content_type=ContentType.objects.get_for_model(TestModel))
+        CsvGenerator.objects.filter(pk__in=[
+            self.generator_2.pk,
+            self.generator_4.pk
+        ]).update(content_type=ContentType.objects.get_for_model(TestModel2))
+
+    def test_for_model(self):
+        """
+        The for_model method should return instances for the provided model
+        """
+        qs = CsvGenerator.objects.for_model(TestModel)
+        self.assertEqual(qs.count(), 3)
+        self.assertIn(self.generator_1, qs)
+        self.assertIn(self.generator_3, qs)
+        self.assertIn(self.generator_5, qs)
