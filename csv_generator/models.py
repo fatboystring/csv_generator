@@ -1,7 +1,9 @@
 from __future__ import unicode_literals
+from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models
+from django.utils.module_loading import import_string
 
 
 class CsvGenerator(models.Model):
@@ -9,6 +11,7 @@ class CsvGenerator(models.Model):
     Model for storing a CSV Generator profile
     """
     title = models.CharField(max_length=255)
+    include_headings = models.BooleanField(default=True)
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
     content_type = models.ForeignKey(ContentType, related_name='+')
@@ -69,27 +72,62 @@ class CsvGenerator(models.Model):
         """
         return map(lambda x: x.get_column_heading(), self.columns.all())
 
-    def generate(self, handle, qs):
+    @staticmethod
+    def _get_csv_writer_class():
+        """
+        Helper method to get the csv writer class
+
+        :return: Csv Writer Class
+        """
+        csv_generator_writer_class_path = getattr(
+            settings,
+            'CSV_GENERATOR_WRITER_CLASS',
+            'csv_generator.utils.UnicodeWriter'
+        )
+        return import_string(csv_generator_writer_class_path)
+
+    def _get_csv_writer(self, handle, **kwargs):
+        """
+        Helper method to get a csv writer instance
+
+        :return: Csv Writer instance
+        """
+        return self._get_csv_writer_class()(handle, **kwargs)
+
+    def generate(self, handle, queryset, **kwargs):
         """
         Generates a csv file writing its contents to 'handle'
 
-        :param handle: File like object to write contents of the csv to
+        :param handle: File like object to write contents of the CSV to
+        :param queryset: Queryset of model instances to generate the CSV from
         :return: handle with csv contents written to it
         """
         expected_model = self.content_type.model_class()
-        if qs.model != expected_model:
+        if queryset.model != expected_model:
             raise ImproperlyConfigured(
                 'CSV Generator \'{0}\' generate method must be passed a '
                 'queryset containing \'{1}\' model instances.  Received '
                 'Queryset of \'{2}\' model instances instead'.format(
-                    self, expected_model.__name__, qs.model.__name__
+                    self, expected_model.__name__, queryset.model.__name__
                 )
             )
 
+        # Get a CSV writer
+        writer = self._get_csv_writer(handle, **kwargs)
+        # Write CSV headings if required
+        if self.include_headings:
+            writer.writerow(self.columns.column_headings())
+
+        # Get a list of field names
         field_names = map(lambda x: x.model_field, self.columns.all())
-        for field_name in field_names:
-            pass
-        print self
+        for instance in queryset:
+            csv_row = map(
+                lambda x: unicode(getattr(instance, x, '')),
+                field_names
+            )
+            writer.writerow(csv_row)
+
+        return handle
 
 
 class CsvGeneratorColumnQueryset(models.QuerySet):
