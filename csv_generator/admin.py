@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+from csv_generator.models import CsvGenerator, CsvGeneratorColumn
 from django.contrib import admin
 
-# Register your models here.
+
+admin.site.register(CsvGenerator)
+admin.site.register(CsvGeneratorColumn)
