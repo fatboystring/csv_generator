@@ -1,18 +1,21 @@
 language: python
 
 python:
-  - "2.6"
-  - "2.7"
+  - 2.7
 
 env:
-  - DJANGO=Django==1.7
-  - DJANGO=Django==1.8
-  - DJANGO=Django==1.9
+  - DJANGO=1.7
+  - DJANGO=1.8
+  - DJANGO=1.9
 
-# command to install dependencies
+before_install:
+  - export DJANGO_SETTINGS_MODULE=your_project.settings
+  - export PYTHONPATH=$HOME/builds/your_github_username/your_repo
+  - export PIP_USE_MIRRORS=true
+
 install:
-  - pip install -r requirements.txt --use-mirrors
-  - pip install -q $DJANGO --use-mirrors
+  - pip install -r requirements.txt
+  - pip install django==$DJANGO --quiet
 
-# command to run tests
-script: python setup.py test
+script:
+  - python manage.py syncdb --noinput
