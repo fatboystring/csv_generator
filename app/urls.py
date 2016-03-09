@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """csv_generator URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
