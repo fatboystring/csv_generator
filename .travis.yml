@@ -9,8 +9,8 @@ env:
   - DJANGO=1.9
 
 before_install:
-  - export DJANGO_SETTINGS_MODULE=your_project.settings
-  - export PYTHONPATH=$HOME/builds/your_github_username/your_repo
+  - export DJANGO_SETTINGS_MODULE=app.settings
+  - export PYTHONPATH=$HOME/builds/fatboystring/csv_generator
   - export PIP_USE_MIRRORS=true
 
 install:
