@@ -24,4 +24,4 @@ install:
   - pip install django==$DJANGO --quiet
 
 script:
-  - "if [[ "${DJANGO}" < 1.8 ]]; then python manage.py syncdb --noinput; else python manage.py migrate --noinput; fi"
+  - 'if [[ "${DJANGO}" < 1.8 ]]; then python manage.py syncdb --noinput; else python manage.py migrate --noinput; fi'
