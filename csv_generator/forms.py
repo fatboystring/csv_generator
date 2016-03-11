@@ -4,6 +4,28 @@ from csv_generator.models import CsvGenerator, CsvGeneratorColumn
 from django import forms
 
 
+class SelectCsvGeneratorForm(forms.Form):
+    """
+    Form class for selecting a csv generator
+    """
+    generator = forms.ModelChoiceField(queryset=CsvGenerator.objects.none())
+
+    def __init__(self, *args, **kwargs):
+        """
+        Custom init method
+        Sets the queryset on the generator field
+
+        :param args: Default positional arguments
+        :type args: ()
+
+        :param kwargs: Default keyword arguments
+        :type kwargs: {}
+        """
+        generators = kwargs.pop('generators')
+        super(SelectCsvGeneratorForm, self).__init__(*args, **kwargs)
+        self.fields['generator'].queryset = generators
+
+
 class CsvGeneratorForm(forms.ModelForm):
     """
     Model form for CsvGenerator
