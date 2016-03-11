@@ -254,6 +254,17 @@ class CsvGeneratorQuerySetTestCase(CsvGeneratorTestCase):
             self.generator_4.pk
         ]).update(content_type=ContentType.objects.get_for_model(TestModel2))
 
+    def test_for_content_type(self):
+        """
+        The content_type method should return instances for the content type
+        """
+        content_type = ContentType.objects.get_for_model(TestModel)
+        qs = CsvGenerator.objects.for_content_type(content_type)
+        self.assertEqual(qs.count(), 3)
+        self.assertIn(self.generator_1, qs)
+        self.assertIn(self.generator_3, qs)
+        self.assertIn(self.generator_5, qs)
+
     def test_for_model(self):
         """
         The for_model method should return instances for the provided model
