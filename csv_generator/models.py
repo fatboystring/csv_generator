@@ -11,6 +11,18 @@ class CsvGeneratorQueryset(models.QuerySet):
     """
     QuerySet for CsvGenerator
     """
+    def for_content_type_id(self, content_type_id):
+        """
+        Method to return a queryset of CsvGenerator
+        model instances for a given content type
+
+        :param content_type_id: ContentType model id
+        :type content_type_id: int
+
+        :return: QuerySet of CsvGenerator model instances
+        """
+        return self.filter(content_type_id=content_type_id)
+
     def for_content_type(self, content_type):
         """
         Method to return a queryset of CsvGenerator
