@@ -1,0 +1,45 @@
+{% extends "admin/base_site.html" %}{% load i18n l10n admin_urls admin_static %}
+
+
+{% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} csv_generator-select{% endblock %}
+
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}" />{% endblock %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+    &rsaquo; <a href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ opts.app_config.verbose_name }}</a>
+    &rsaquo; <a href="{% url opts|admin_urlname:'changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>
+    &rsaquo; {% trans 'Export to CSV' %}
+</div>
+{% endblock %}
+
+
+{% block content %}
+    <p>{% blocktrans %}Please select the CSV generator you would like to use when exporting these results{% endblocktrans %}</p>
+    <form method="post">
+        {% csrf_token %}
+
+        <fieldset class="module aligned">
+            <div class="form-row field-title">
+                <div>
+                    {{ form.generator.label_tag }}
+                    {{ form.generator }}
+                </div>
+            </div>
+
+            {% for obj in queryset %}
+            <input type="hidden" name="{{ action_checkbox_name }}" value="{{ obj.pk|unlocalize }}" />
+            {% endfor %}
+            <input type="hidden" name="action" value="export_to_csv" />
+            <input type="hidden" name="post" value="yes" />
+        </fieldset>
+
+        <div class="submit-row">
+            <input type="submit" value="{% trans "Export" %}" class="default" />
+            <input type="submit" onclick="window.history.back(); return false;" value="{% trans "Take me back" %}" />
+        </div>
+    </form>
+{% endblock %}
