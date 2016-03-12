@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+"""
+Tests the csv_generator CsvGenerator Form
+"""
 from __future__ import unicode_literals
 from csv_generator.forms import CsvGeneratorForm
 from csv_generator.models import CsvGenerator

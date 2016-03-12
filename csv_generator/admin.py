@@ -1,9 +1,57 @@
 # -*- coding: utf-8 -*-
+"""
+Admin for the csv_generator app
+"""
 from __future__ import unicode_literals
 from csv_generator.forms import CsvGeneratorForm, CsvGeneratorColumnForm
 from csv_generator.forms import CsvGeneratorColumnFormSet
 from csv_generator.models import CsvGenerator, CsvGeneratorColumn
+from csv_generator.views import CsvExportView
 from django.contrib import admin
+from django.contrib.contenttypes.models import ContentType
+
+
+class CsvExportAdmin(admin.ModelAdmin):
+    """
+    Custom ModelAdmin class
+    """
+    actions = ['export_to_csv']
+
+    @staticmethod
+    def export_to_csv_view(request, **kwargs):
+        """
+        Helper method for rendering a view to export a queryset to csv
+
+        :param request: Http Request instance
+        :type request: django.http.HttpRequest
+
+        :param kwargs: Default keyword args
+        :type kwargs: {}
+
+        :return: HttpResponse instance
+        """
+        return CsvExportView.as_view()(request, **kwargs)
+
+    def export_to_csv(self, request, queryset):
+        """
+        Admin action allowing selected items to be exported as a csv file
+
+        :param request: Http Request instance
+        :type request: django.http.HttpRequest
+
+        :param queryset: QuerySet of model instances to export
+        :type queryset: django.db.models.query.QuerySet
+
+        :return: Http response
+        """
+        content_type = ContentType.objects.get_for_model(self.model)
+        generators = CsvGenerator.objects.for_model(content_type.model_class())
+        return self.export_to_csv_view(
+            request,
+            queryset=queryset,
+            generators=generators
+        )
+    export_to_csv.short_description = "Export the selected items to csv"
 
 
 class CsvGeneratorColumnInline(admin.TabularInline):
@@ -18,11 +66,14 @@ class CsvGeneratorColumnInline(admin.TabularInline):
     extra = 0
 
 
-class CsvGeneratorAdmin(admin.ModelAdmin):
+class CsvGeneratorAdmin(CsvExportAdmin):
     """
     Admin class for CsvGenerator models
     """
     form = CsvGeneratorForm
+    list_filter = (
+        ('content_type', admin.RelatedOnlyFieldListFilter),
+    )
 
     def get_readonly_fields(self, request, obj=None):
         """

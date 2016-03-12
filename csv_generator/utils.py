@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+"""
+Utils for the csv_generator app
+"""
 from __future__ import unicode_literals
 import codecs
 import csv

@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+"""
+Views for the csv_generator app
+"""
 from __future__ import unicode_literals
 from csv_generator.forms import SelectCsvGeneratorForm
 from django.contrib import admin

@@ -1,13 +1,19 @@
 # -*- coding: utf-8 -*-
+"""
+Tests the csv_generator views
+"""
 from __future__ import unicode_literals
 from csv_generator.forms import SelectCsvGeneratorForm
 from csv_generator.models import CsvGenerator
 from csv_generator.views import CsvExportView
 from csv_generator.tests.models import TestModel
 from csv_generator.tests.utils import CsvGeneratorTestCase
+from django.http import HttpResponse
 from django.test import RequestFactory
 from django.views.generic import FormView
+from freezegun import freeze_time
 from mock import patch
+import datetime
 
 
 class CsvExportViewTestCase(CsvGeneratorTestCase):
@@ -66,10 +72,48 @@ class CsvExportViewTestCase(CsvGeneratorTestCase):
         """
         The view should call render_csv_to_response if a generator was selected
         """
-        raise Exception('Not yet implemented')
+        queryset = TestModel.objects.all()
+        generators = CsvGenerator.objects.all()
+        request = self.factory.post('/fake-path/', data={
+            'post': 'yes',
+            'action': 'export_to_csv',
+            'generator': self.generator_1.pk
+        })
+        self.view(request, generators=generators, queryset=queryset)
+        patched.assert_called_with(self.generator_1, queryset)
 
+    @freeze_time('2015-01-01 12:00')
     def test_render_csv_to_response(self):
         """
         The render_csv_to_response method should return a csv response
         """
-        raise Exception('Not yet implemented')
+        queryset = TestModel.objects.all()
+        generators = CsvGenerator.objects.all()
+        request = self.factory.post('/fake-path/', data={
+            'post': 'yes',
+            'action': 'export_to_csv',
+            'generator': self.generator_1.pk
+        })
+        response = self.view(request, generators=generators, queryset=queryset)
+        self.assertEqual(
+            response['Content-Disposition'],
+            'attachment; filename="{0}-{1}.csv"'.format(
+                self.generator_1.title, datetime.datetime.now()
+            )
+        )
+
+    @patch('csv_generator.models.CsvGenerator.generate')
+    def test_render_csv_to_response_calls_generate(self, patched):
+        """
+        The render_csv_to_response method should return a csv response
+        """
+        queryset = TestModel.objects.all()
+        generators = CsvGenerator.objects.all()
+        request = self.factory.post('/fake-path/', data={
+            'post': 'yes',
+            'action': 'export_to_csv',
+            'generator': self.generator_1.pk
+        })
+        self.view(request, generators=generators, queryset=queryset)
+        self.assertIsInstance(patched.call_args[0][0], HttpResponse)
+        self.assertEqual(patched.call_args[0][1], queryset)

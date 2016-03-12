@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+"""
+Test utils for the csv_generator app
+"""
 from __future__ import unicode_literals
 from csv_generator.tests.factories import CsvGeneratorFactory
 from csv_generator.tests.factories import CsvGeneratorColumnFactory

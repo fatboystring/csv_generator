@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+"""
+Models for the csv_generator app
+"""
 from __future__ import unicode_literals
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType

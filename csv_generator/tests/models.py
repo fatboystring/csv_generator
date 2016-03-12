@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+"""
+csv_generator app test Models
+"""
 from __future__ import unicode_literals
 from django.db import models
 
