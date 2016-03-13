@@ -8,18 +8,20 @@ A configurable CSV Generator for Django
 
 ## Installation
 
-pip install csv_generator
+`pip install csv_generator`
 
 Add 'csv_generator' to the INSTALLED_APPS setting in your django project
 
+`INSTALLED_APPS += ('csv_generator',)`
+
 ### Pre Django 1.9
 
-python manage.py syncdb
+`python manage.py syncdb`
 
 ### Django 1.9 and above
 
-python manage.py migrate
+`python manage.py migrate`
 
 ## Usage
 
-TODO
+Coming soon
