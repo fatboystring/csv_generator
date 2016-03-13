@@ -4,16 +4,15 @@ Tests the csv_generator CsvGeneratorColumn Form
 """
 from __future__ import unicode_literals
 from csv_generator.admin import CsvGeneratorColumnInline, CsvGeneratorAdmin
-from csv_generator.admin import CsvExportAdmin
+from csv_generator.admin import CsvExportAdmin, ContentTypeListFilter
 from csv_generator.forms import CsvGeneratorForm
 from csv_generator.forms import CsvGeneratorColumnForm
 from csv_generator.forms import CsvGeneratorColumnFormSet
 from csv_generator.models import CsvGenerator, CsvGeneratorColumn
 from csv_generator.tests.factories import CsvGeneratorFactory
 from csv_generator.tests.utils import CsvGeneratorTestCase
-from django.contrib.admin import TabularInline, RelatedOnlyFieldListFilter
+from django.contrib.admin import TabularInline
 from django.contrib.admin import ModelAdmin
-from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase, RequestFactory
 from mock import Mock, patch
 
@@ -92,11 +91,10 @@ class CsvGeneratorAdminTestCase(TestCase):
         """
         content_type should be used as a list filter
         """
-        list_filter = filter(
-            lambda x: x[0] == 'content_type',
-            CsvGeneratorAdmin.list_filter
-        )[0]
-        self.assertEqual(list_filter[1], RelatedOnlyFieldListFilter)
+        self.assertEqual(
+            CsvGeneratorAdmin.list_filter[0],
+            ContentTypeListFilter
+        )
 
     def test_get_readonly_fields_update(self):
         """

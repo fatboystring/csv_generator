@@ -11,6 +11,57 @@ from django.contrib import admin
 from django.contrib.contenttypes.models import ContentType
 
 
+class ContentTypeListFilter(admin.SimpleListFilter):
+    """
+    List filter to filter results by content type
+    Backwards compatible to django 1.7
+    """
+    title = 'Content Type'
+
+    parameter_name = 'content_type'
+
+    def lookups(self, request, model_admin):
+        """
+        Returns a list of tuples. The first element in each tuple is the
+        coded value for the option that will appear in the URL query.
+        The second element is the human-readable name for the option that
+        will appear in the right sidebar.
+
+        :param request: Http Request instance
+        :type request: django.http.HttpRequest
+
+        :param model_admin: Django modeladmin instance
+        :type model_admin: django.contrib.admin.ModelAdmin
+
+        :return: List of tuples
+        """
+        content_type_ids = model_admin.model.objects.values_list(
+            'content_type', flat=True
+        ).distinct()
+        return map(
+            lambda x: (x.pk, x.name),
+            ContentType.objects.filter(pk__in=content_type_ids)
+        )
+
+    def queryset(self, request, queryset):
+        """
+        Returns the filtered queryset based on the value provided
+        in the query string and retrievable via `self.value()`.
+
+        :param request: Http Request instance
+        :type request: django.http.HttpRequest
+
+        :param queryset: Queryset of model instances
+        :type queryset: django.db.models.query.QuerySet
+
+        :return: Queryset of model instances
+        """
+        if self.value():
+            return queryset.filter(content_type=self.value())
+        else:
+            return queryset
+
+
 class CsvExportAdmin(admin.ModelAdmin):
     """
     Custom ModelAdmin class
@@ -71,9 +122,7 @@ class CsvGeneratorAdmin(CsvExportAdmin):
     Admin class for CsvGenerator models
     """
     form = CsvGeneratorForm
-    list_filter = (
-        ('content_type', admin.RelatedOnlyFieldListFilter),
-    )
+    list_filter = (ContentTypeListFilter,)
 
     def get_readonly_fields(self, request, obj=None):
         """
