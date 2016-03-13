@@ -10,6 +10,14 @@ A configurable CSV Generator for Django
 
 pip install csv_generator
 
+### Pre Django 1.9
+
+python manage.py syncdb
+
+### Django 1.9 and above
+
+python manage.py migrate
+
 ## Usage
 
 TODO
