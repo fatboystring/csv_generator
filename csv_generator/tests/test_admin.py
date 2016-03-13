@@ -10,9 +10,11 @@ from csv_generator.forms import CsvGeneratorColumnForm
 from csv_generator.forms import CsvGeneratorColumnFormSet
 from csv_generator.models import CsvGenerator, CsvGeneratorColumn
 from csv_generator.tests.factories import CsvGeneratorFactory
+from csv_generator.tests.models import TestModel
 from csv_generator.tests.utils import CsvGeneratorTestCase
 from django.contrib.admin import TabularInline
 from django.contrib.admin import ModelAdmin
+from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase, RequestFactory
 from mock import Mock, patch
 
@@ -177,3 +179,67 @@ class CsvExportAdminTestCase(CsvGeneratorTestCase):
             queryset=queryset,
             generators=for_model.return_value
         )
+
+
+class ContentTypeListFilterTestCase(CsvGeneratorTestCase):
+    """
+    Tests the ContentTypeListFilter
+    """
+    def setUp(self):
+        super(ContentTypeListFilterTestCase, self).setUp()
+        self.admin = CsvGeneratorAdmin(CsvGenerator, Mock())
+        self.request = RequestFactory().post('/fake-path/')
+        self.filter = ContentTypeListFilter(
+            self.request, {}, CsvGenerator, self.admin
+        )
+
+    def test_title(self):
+        """
+        The filters title should be 'Content Type'
+        """
+        self.assertEqual(ContentTypeListFilter.title, 'Content Type')
+
+    def test_parameter_name(self):
+        """
+        The parameter name should be 'content_type'
+        """
+        self.assertEqual(ContentTypeListFilter.parameter_name, 'content_type')
+
+    def test_lookups(self):
+        """
+        The lookups method should return only available content types
+        """
+        content_type = ContentType.objects.get_for_model(TestModel)
+        lookups = self.filter.lookups(self.request, self.admin)
+        self.assertEqual(len(lookups), 1)
+        self.assertEqual(lookups[0][0], content_type.pk)
+        self.assertEqual(lookups[0][1], content_type.name)
+
+    def test_queryset(self):
+        """
+        The lookups method should return only available content types
+        """
+        content_type = ContentType.objects.get_for_model(TestModel)
+        list_filter = ContentTypeListFilter(
+            self.request,
+            {'content_type': content_type.pk},
+            CsvGenerator,
+            self.admin
+        )
+        request = RequestFactory().post('/fake-path/')
+        queryset = list_filter.queryset(request, CsvGenerator.objects.all())
+        self.assertEqual(queryset.count(), 5)
+
+    def test_queryset_fails(self):
+        """
+        The lookups method should return only available content types
+        """
+        list_filter = ContentTypeListFilter(
+            self.request,
+            {'content_type': 1},
+            CsvGenerator,
+            self.admin
+        )
+        request = RequestFactory().post('/fake-path/')
+        queryset = list_filter.queryset(request, CsvGenerator.objects.all())
+        self.assertEqual(queryset.count(), 0)
