@@ -4,6 +4,7 @@ A configurable CSV Generator for Django
 
 ## Build status:
 
+[![Django CSV generator on pypi](https://img.shields.io/badge/pypi-0.1.0-green.svg)](https://pypi.python.org/pypi/csv_generator)
 ![](https://travis-ci.org/fatboystring/csv_generator.svg?branch=master)
 
 ## Installation
