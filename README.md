@@ -133,7 +133,7 @@ generator = CsvGenerator.objects.get(pk=1)  # Assume this is a generator instanc
 response = HttpResponse(content_type='text/csv')
 response['Content-Disposition'] = 'attachment; filename="my_csv.csv"'
 queryset = MyModel.objects.all()
-csv_file = generator.generate(response, queryset)
+response = generator.generate(response, queryset)
 ```
 
 
