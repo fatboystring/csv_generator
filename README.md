@@ -6,6 +6,12 @@
 
 A configurable CSV Generator for Django
 
+## Support
+
+Supports the following versions of Django:
+
+ - Django 1.8
+ - Django 1.9
 
 ## Installation
 
