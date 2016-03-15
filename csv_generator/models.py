@@ -117,7 +117,7 @@ class CsvGenerator(models.Model):
 
         :return: List of CSV headings
         """
-        return map(lambda x: x.get_column_heading(), self.columns.all())
+        return self.columns.column_headings()
 
     @staticmethod
     def _get_csv_writer_class():
