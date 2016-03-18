@@ -150,8 +150,7 @@ class CsvGeneratorModelTestCase(CsvGeneratorTestCase):
         """
         Gets available attributes for the instance
         """
-        extra_attributes = self.generator_1.available_attributes()
-        self.assertEqual(extra_attributes, {
+        self.assertEqual(self.generator_1.available_attributes, {
             'all_attr': 'All Attribute',
             'test_attr': 'Test Attribute'
         })
@@ -168,11 +167,25 @@ class CsvGeneratorModelTestCase(CsvGeneratorTestCase):
         """
         Gets available attributes for the instance
         """
-        extra_attributes = self.generator_1.available_attributes()
-        self.assertEqual(extra_attributes, {
+        self.assertEqual(self.generator_1.available_attributes, {
             'all_attr': 'Overridden Attribute',
             'test_attr': 'Test Attribute'
         })
+
+    @override_settings(CSV_GENERATOR_AVAILABLE_ATTRIBUTES={
+        'all': {'all_attr': 'All Attribute'},
+        'tests.testmodel': {'test_attr': 'Test Attribute'}
+    })
+    def test_all_attributes(self):
+        """
+        Gets all attributes for the instance
+        """
+        attributes = {
+            'all_attr': 'All Attribute',
+            'test_attr': 'Test Attribute'
+        }
+        attributes.update(self.generator_1.available_fields)
+        self.assertEqual(attributes, self.generator_1.all_attributes)
 
 
 class CsvGeneratorGenerateModelTestCase(CsvGeneratorColumnTestCase):

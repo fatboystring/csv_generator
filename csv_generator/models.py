@@ -142,6 +142,7 @@ class CsvGenerator(models.Model):
         """
         return getattr(settings, 'CSV_GENERATOR_AVAILABLE_ATTRIBUTES', {})
 
+    @property
     def available_attributes(self):
         """
         Gets extra attributes for the model class specified on the instance
@@ -153,6 +154,18 @@ class CsvGenerator(models.Model):
         model_attrs = self._get_available_attributes().get(model_label, {})
         all_attrs.update(model_attrs)
         return all_attrs
+
+    @property
+    def all_attributes(self):
+        """
+        Gets all attributes from the model instance
+
+        :return: Dict
+        """
+        attributes = self.available_attributes
+        fields = self.available_fields
+        attributes.update(fields)
+        return attributes
 
     def _get_csv_writer(self, handle, **kwargs):
         """
@@ -238,5 +251,7 @@ class CsvGeneratorColumn(models.Model):
         """
         if self.column_heading:
             return self.column_heading
+        elif self.model_field in self.generator.available_attributes:
+            return self.generator.available_attributes[self.model_field]
         else:
             return self.generator.get_field(self.model_field).verbose_name
