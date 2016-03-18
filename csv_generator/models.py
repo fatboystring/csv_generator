@@ -133,6 +133,27 @@ class CsvGenerator(models.Model):
         )
         return import_string(csv_generator_writer_class_path)
 
+    @staticmethod
+    def _get_available_attributes():
+        """
+        Helper method to get extra attributes defined in the settings
+
+        :return: dict
+        """
+        return getattr(settings, 'CSV_GENERATOR_AVAILABLE_ATTRIBUTES', {})
+
+    def available_attributes(self):
+        """
+        Gets extra attributes for the model class specified on the instance
+
+        :return: dict
+        """
+        model_label = self.get_meta_class().label_lower
+        all_attrs = self._get_available_attributes().get('all', {})
+        model_attrs = self._get_available_attributes().get(model_label, {})
+        all_attrs.update(model_attrs)
+        return all_attrs
+
     def _get_csv_writer(self, handle, **kwargs):
         """
         Helper method to get a csv writer instance
