@@ -6,7 +6,7 @@ from __future__ import unicode_literals
 from csv_generator.models import CsvGenerator, CsvGeneratorColumn
 from csv_generator.tests.utils import CsvGeneratorColumnTestCase
 from django.db import models
-from django.test import TestCase
+from django.test import override_settings, TestCase
 
 
 class SimpleCsvGeneratorColumnTestCase(TestCase):
@@ -85,6 +85,16 @@ class CsvGeneratorColumnModelTestCase(CsvGeneratorColumnTestCase):
             self.column_1.get_column_heading(),
             self.generator_1.get_field('title').verbose_name
         )
+
+    @override_settings(CSV_GENERATOR_AVAILABLE_ATTRIBUTES={
+        'tests.testmodel': {'test_attr': 'Test Attribute'}
+    })
+    def test_get_column_heading_model_attribute(self):
+        """
+        The get_column_heading method should return the model attributes name
+        """
+        self.column_1.model_field = 'test_attr'
+        self.assertEqual(self.column_1.get_column_heading(), 'Test Attribute')
 
 
 class CsvGeneratorColumnQuerySetTestCase(CsvGeneratorColumnTestCase):

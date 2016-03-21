@@ -32,6 +32,8 @@ Add 'csv_generator' to the `INSTALLED_APPS` setting in your django project
 
 ## Configuration
 
+### CSV Writer
+
 By default csv_generator uses the [unicode CSV writer class](https://github.com/fatboystring/csv_generator/blob/master/csv_generator/utils.py) bundled with the app.
 However, you can use your own CSV Writer class by specifying the import path for your custom writer class (as a string) using the `CSV_GENERATOR_WRITER_CLASS` setting:
 
@@ -40,6 +42,28 @@ CSV_GENERATOR_WRITER_CLASS = 'my_app.utils.MyCustomCsvGeneratorClass'
 ```
 
 Any custom CSV writer class must implement the same methods (with the same signatures) as the UnicodeWriter class bundled with this app.
+
+### Non model field attributes
+
+It is also possible to process extra model attributes (non-field attributes) such as methods and properties defined on the model.
+Extra attributes which can be processed by the csv_generator are defined in the settings file using the following setting:
+
+```
+CSV_GENERATOR_AVAILABLE_ATTRIBUTES = {
+    'all': {
+        'commonattribute': 'An attribute that is common to all models in the system'
+    },
+    'myapp.mymodel': {
+        'somecustomattribute': 'My custom model attribute'
+    }
+}
+```
+
+Each key in the `CSV_GENERATOR_AVAILABLE_ATTRIBUTES` dict should be in the format `<app_label>.<model_name>` (lower case).
+The value for each of these keys should be another dict where the key is the attribute name on the model and the value is the human readable description of the attribute used in the admin forms.
+The special case here is the `all` key in the `CSV_GENERATOR_AVAILABLE_ATTRIBUTES`.  Values defined under the `all` key will be made available to all models in the system.
+
+Each attribute defined can be a property or a method.  Methods will be called when a csv file is generated.  It is important to note that any method made available to the csv generator will be called with no arguments. As such the signature of the methods exposed to the csv generator should be callable without any arguments.
 
 
 ## Usage

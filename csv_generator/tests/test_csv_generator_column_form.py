@@ -36,10 +36,4 @@ class CsvGeneratorColumnFormTestCase(CsvGeneratorTestCase):
         field = self.form.fields['model_field']
         self.assertIsInstance(field, forms.ChoiceField)
         self.assertEqual(field.label, 'Field')
-        self.assertEqual(
-            field.choices,
-            map(
-                lambda x: (x.name, x.verbose_name),
-                self.generator_1.get_meta_class().fields
-            )
-        )
+        self.assertEqual(field.choices, self.generator_1.all_attributes.items())

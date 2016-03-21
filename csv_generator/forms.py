@@ -57,12 +57,9 @@ class CsvGeneratorColumnForm(forms.ModelForm):
         :param kwargs: Default keyword args
         :type kwargs: {}
         """
-        self.csv_generator = kwargs.pop('csv_generator')
+        generator = kwargs.pop('csv_generator')
         super(CsvGeneratorColumnForm, self).__init__(*args, **kwargs)
-        self.fields['model_field'].choices = map(
-            lambda x: (x.name, x.verbose_name),
-            self.csv_generator.get_meta_class().fields
-        )
+        self.fields['model_field'].choices = generator.all_attributes.items()
 
     class Meta(object):
         """
