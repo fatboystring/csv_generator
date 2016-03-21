@@ -82,26 +82,18 @@ class CsvGeneratorModelTestCase(CsvGeneratorTestCase):
         """
         The available_fields property should return a dict of model fields
         """
-        self.assertIsInstance(
+        self.assertEqual(
             self.generator_1.available_fields['title'],
-            models.CharField
+            TestModel._meta.get_field('title').verbose_name
         )
-        self.assertIsInstance(
+        self.assertEqual(
             self.generator_1.available_fields['text'],
-            models.TextField
+            TestModel._meta.get_field('text').verbose_name
         )
-        self.assertIsInstance(
+        self.assertEqual(
             self.generator_1.available_fields['date_created'],
-            models.DateTimeField
+            TestModel._meta.get_field('date_created').verbose_name
         )
-
-    def test_available_field_names(self):
-        """
-        The available_field_names property should return a list of field names
-        """
-        self.assertIn('title', self.generator_1.available_field_names)
-        self.assertIn('text', self.generator_1.available_field_names)
-        self.assertIn('date_created', self.generator_1.available_field_names)
 
     def test_get_meta_class(self):
         """
@@ -132,6 +124,40 @@ class CsvGeneratorModelTestCase(CsvGeneratorTestCase):
         instance = self.generator_1._get_csv_writer(mocked_file)
         self.assertIsInstance(instance, UnicodeWriter)
         self.assertEqual(instance.stream, mocked_file)
+
+    def test__resolve_attribute(self):
+        """
+        The _resolve_attribute method should return the correct value
+        """
+        self.assertEqual(
+            self.generator_1._resolve_attribute(
+                TestModel(title='Test title'),
+                'title'
+            ),
+            'Test title'
+        )
+
+    def test__resolve_attribute_returns_empty_string(self):
+        """
+        The method should return an empty string for a missing attribute
+        """
+        self.assertEqual(
+            self.generator_1._resolve_attribute(
+                TestModel(title='Test title'),
+                'phantom_attribute'
+            ),
+            ''
+        )
+
+    def test__resolve_attribute_calls_method(self):
+        """
+        The method should return an empty string for a missing attribute
+        """
+        instance = TestModel(title='Test title')
+        self.assertEqual(
+            self.generator_1._resolve_attribute(instance, 'test_attr'),
+            instance.test_attr()
+        )
 
     @override_settings(CSV_GENERATOR_AVAILABLE_ATTRIBUTES={'foo': 'bar'})
     def test__get_available_attributes(self):

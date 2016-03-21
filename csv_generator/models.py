@@ -71,54 +71,6 @@ class CsvGenerator(models.Model):
         """
         return self.title
 
-    def get_meta_class(self):
-        """
-        Method to get the meta class for the linked content type
-
-        :return: Meta class
-        """
-        return self.content_type.model_class()._meta
-
-    @property
-    def available_fields(self):
-        """
-        Method for getting available fields on the model
-
-        :return: Dict of available fields on the model
-        """
-        return dict(map(lambda x: (x.name, x), self.get_meta_class().fields))
-
-    @property
-    def available_field_names(self):
-        """
-        Gets a list of available field names
-
-        :return: List of field names for the linked model
-        """
-        return self.available_fields.keys()
-
-    def get_field(self, field_name):
-        """
-        Method for getting a field from the associated model by its name
-
-        :param field_name: The name of the field to retrieve
-        :type field_name: str|unicode
-
-        :return: Field
-        """
-        if field_name not in self.available_field_names:
-            return None
-        return self.get_meta_class().get_field(field_name)
-
-    @property
-    def csv_headings(self):
-        """
-        Gets the csv headings for the generator
-
-        :return: List of CSV headings
-        """
-        return self.columns.column_headings()
-
     @staticmethod
     def _get_csv_writer_class():
         """
@@ -140,7 +92,53 @@ class CsvGenerator(models.Model):
 
         :return: dict
         """
-        return getattr(settings, 'CSV_GENERATOR_AVAILABLE_ATTRIBUTES', {})
+        return getattr(
+            settings,
+            'CSV_GENERATOR_AVAILABLE_ATTRIBUTES',
+            {}
+        )
+
+    @staticmethod
+    def _resolve_attribute(instance, attr_name):
+        """
+        Helper method for resolving a value from a given attribute on the model
+        instance. Will call methods and return their returned data values
+
+        :param instance: The model instance we're getting data from
+        :type instance: django.db.models.Model
+
+        :param attr_name: The name of the attribute we're resolving
+        :type attr_name: str|unicode
+
+        :return: unicode string
+        """
+        value = getattr(instance, attr_name, '')
+        if callable(value):
+            value = value()
+        return unicode(value)
+
+    @property
+    def csv_headings(self):
+        """
+        Gets the csv headings for the generator
+
+        :return: List of CSV headings
+        """
+        return self.columns.column_headings()
+
+    @property
+    def available_fields(self):
+        """
+        Method for getting available fields on the model
+
+        :return: Dict of available fields on the model
+        """
+        return dict(
+            map(
+                lambda x: (x.name, x.verbose_name),
+                self.get_meta_class().fields
+            )
+        )
 
     @property
     def available_attributes(self):
@@ -175,6 +173,27 @@ class CsvGenerator(models.Model):
         """
         return self._get_csv_writer_class()(handle, **kwargs)
 
+    def get_meta_class(self):
+        """
+        Method to get the meta class for the linked content type
+
+        :return: Meta class
+        """
+        return self.content_type.model_class()._meta
+
+    def get_field(self, field_name):
+        """
+        Method for getting a field from the associated model by its name
+
+        :param field_name: The name of the field to retrieve
+        :type field_name: str|unicode
+
+        :return: Field
+        """
+        if field_name not in self.available_fields:
+            return None
+        return self.get_meta_class().get_field(field_name)
+
     def generate(self, handle, queryset, **kwargs):
         """
         Generates a csv file writing its contents to 'handle'
@@ -203,7 +222,7 @@ class CsvGenerator(models.Model):
         field_names = map(lambda x: x.model_field, self.columns.all())
         for instance in queryset:
             csv_row = map(
-                lambda x: unicode(getattr(instance, x, '')),
+                lambda x: self._resolve_attribute(instance, x),
                 field_names
             )
             writer.writerow(csv_row)
@@ -251,7 +270,5 @@ class CsvGeneratorColumn(models.Model):
         """
         if self.column_heading:
             return self.column_heading
-        elif self.model_field in self.generator.available_attributes:
-            return self.generator.available_attributes[self.model_field]
-        else:
-            return self.generator.get_field(self.model_field).verbose_name
+        elif self.model_field in self.generator.all_attributes:
+            return self.generator.all_attributes[self.model_field]

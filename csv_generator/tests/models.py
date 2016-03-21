@@ -17,6 +17,9 @@ class TestModel(models.Model):
     text = models.TextField()
     date_created = models.DateTimeField()
 
+    def test_attr(self):
+        return 'This is a callable test attr for \'{0}\''.format(self.title)
+
 
 class TestModel2(models.Model):
     """
