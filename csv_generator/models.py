@@ -118,15 +118,6 @@ class CsvGenerator(models.Model):
         return unicode(value)
 
     @property
-    def csv_headings(self):
-        """
-        Gets the csv headings for the generator
-
-        :return: List of CSV headings
-        """
-        return self.columns.column_headings()
-
-    @property
     def available_fields(self):
         """
         Method for getting available fields on the model
