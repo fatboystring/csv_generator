@@ -2,6 +2,6 @@
 """
 Configurable CSV Generator app for Django
 """
-VERSION = ('0', '2', '1')
+VERSION = ('0', '2', '2')
 
 __version__ = '.'.join(VERSION)
