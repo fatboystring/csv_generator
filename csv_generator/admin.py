@@ -96,7 +96,7 @@ class CsvExportAdmin(admin.ModelAdmin):
         :return: Http response
         """
         content_type = ContentType.objects.get_for_model(self.model)
-        generators = CsvGenerator.objects.for_model(content_type.model_class())
+        generators = CsvGenerator.objects.for_content_type_id(content_type.pk)
         return self.export_to_csv_view(
             request,
             queryset=queryset,
