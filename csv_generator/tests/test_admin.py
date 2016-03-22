@@ -165,19 +165,19 @@ class CsvExportAdminTestCase(CsvGeneratorTestCase):
         self.admin.export_to_csv_view(self.request, foo='bar')
         patched.return_value.assert_called_with(self.request, foo='bar')
 
-    @patch('csv_generator.admin.CsvGenerator.objects.for_content_type_id')
+    @patch('csv_generator.admin.CsvGenerator.objects.for_model')
     @patch('csv_generator.admin.CsvExportAdmin.export_to_csv_view')
-    def test_export_to_csv(self, patched, for_content_type_id):
+    def test_export_to_csv(self, patched, for_model):
         """
         The method should call down to export_to_csv_view
         """
         queryset = CsvGenerator.objects.all()
-        for_content_type_id.return_value = Mock()
+        for_model.return_value = Mock()
         self.admin.export_to_csv(self.request, queryset)
         patched.assert_called_with(
             self.request,
             queryset=queryset,
-            generators=for_content_type_id.return_value
+            generators=for_model.return_value
         )
 
 
