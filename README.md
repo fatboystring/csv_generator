@@ -1,4 +1,4 @@
-[![Django CSV generator on pypi](https://img.shields.io/badge/pypi-0.2.0-green.svg)](https://pypi.python.org/pypi/csv_generator)
+[![Django CSV generator on pypi](https://img.shields.io/badge/pypi-0.2.1-green.svg)](https://pypi.python.org/pypi/csv_generator)
 ![MIT license](https://img.shields.io/badge/licence-MIT-blue.svg)
 ![Build status](https://travis-ci.org/fatboystring/csv_generator.svg?branch=master)
 
