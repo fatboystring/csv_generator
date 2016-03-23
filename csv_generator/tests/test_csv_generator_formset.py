@@ -6,7 +6,9 @@ from __future__ import unicode_literals
 from csv_generator.forms import CsvGeneratorColumnFormSet
 from csv_generator.models import CsvGenerator, CsvGeneratorColumn
 from csv_generator.tests.utils import CsvGeneratorTestCase
+from django import get_version
 from django import forms
+from django.test.utils import skipUnless
 
 
 class CsvGeneratorColumnFormSetTestCase(CsvGeneratorTestCase):
@@ -22,6 +24,7 @@ class CsvGeneratorColumnFormSetTestCase(CsvGeneratorTestCase):
             forms.BaseInlineFormSet
         ))
 
+    @skipUnless(get_version() > '1.7', 'Not implemented in django < 1.8')
     def test_get_form_kwargs(self):
         """
         The method should add the csv_generator instance to the form kwargs
