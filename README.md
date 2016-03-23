@@ -10,6 +10,7 @@ A configurable CSV Generator for Django
 
 Supports the following versions of Django:
 
+ - Django 1.7
  - Django 1.8
  - Django 1.9
 
