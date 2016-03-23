@@ -87,3 +87,38 @@ class CsvGeneratorColumnFormSet(forms.BaseInlineFormSet):
         kwargs = super(CsvGeneratorColumnFormSet, self).get_form_kwargs(index)
         kwargs.update({'csv_generator': self.instance})
         return kwargs
+
+    def _construct_form(self, i, **kwargs):
+        """
+        Construct form method
+        Backwards compatible to django 1.7
+
+        :param i: Form index
+        :type i: int
+
+        :param kwargs: Default form kwargs
+        :type kwargs: {}
+
+        :return: Form instance
+        """
+        kwargs.update({'csv_generator': self.instance})
+        return super(CsvGeneratorColumnFormSet, self)._construct_form(
+            i, **kwargs
+        )
+
+    @property
+    def empty_form(self):
+        """
+        Constructs an empty form for the formset
+        Backwards compatible to django 1.7
+
+        :return: Form instance
+        """
+        form = self.form(
+            auto_id=self.auto_id,
+            prefix=self.add_prefix('__prefix__'),
+            empty_permitted=True,
+            csv_generator=self.instance
+        )
+        self.add_fields(form, None)
+        return form
