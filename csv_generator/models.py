@@ -138,7 +138,10 @@ class CsvGenerator(models.Model):
 
         :return: dict
         """
-        model_label = self.get_meta_class().label_lower
+        model_label = '{0}.{1}'.format(
+            self.get_meta_class().app_label,
+            self.get_meta_class().model_name
+        )
         all_attrs = self._get_available_attributes().get('all', {})
         model_attrs = self._get_available_attributes().get(model_label, {})
         all_attrs.update(model_attrs)
