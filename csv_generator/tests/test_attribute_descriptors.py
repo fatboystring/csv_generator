@@ -7,7 +7,8 @@ from csv_generator.attribute_descriptors import (
     DescriptorException,
     BaseDescriptor,
     AttributeDescriptor,
-    FieldDescriptor
+    FieldDescriptor,
+    NoopResolver
 )
 from csv_generator.tests.models import TestModel
 from csv_generator.tests.utils import CsvGeneratorTestCase
@@ -38,19 +39,43 @@ class BaseDescriptorTestCase(CsvGeneratorTestCase):
         instance = BaseDescriptor(foo='bar')
         self.assertRaises(DescriptorException, instance.check_attr, 'bar')
 
+    def test_resolve_returns_attribute(self):
+        """
+        The resolve method should return the attribute
+        """
+        instance = BaseDescriptor(title='title')
+        self.assertEqual(
+            self.generator_1.title,
+            instance.resolve(self.generator_1, 'title')
+        )
+
+    def test_resolve_calls_method(self):
+        """
+        The resolve method should return the attribute
+        """
+        instance = BaseDescriptor(foo='foo')
+        self.generator_1.foo = lambda: 'bar'
+        self.assertEqual(instance.resolve(self.generator_1, 'foo'), 'bar')
+
 
 class FieldDescriptorTestCase(CsvGeneratorTestCase):
     """
     Tests the FieldDescriptor
     """
-    def test_available_fields(self):
+    def test_fields(self):
         """
-        The available_fields property should return a dict of model fields
+        The descriptor should be a dict of model fields
         """
         descriptor = FieldDescriptor.for_model(self.generator_1)
         self.assertEqual(descriptor['title'], TestModel._meta.get_field('title').verbose_name)
         self.assertEqual(descriptor['text'], TestModel._meta.get_field('text').verbose_name)
         self.assertEqual(descriptor['date_created'], TestModel._meta.get_field('date_created').verbose_name)
+
+    def test_generates_instance(self):
+        """
+        The for_model class method should return the correct instance
+        """
+        self.assertIsInstance(FieldDescriptor.for_model(self.generator_1), FieldDescriptor)
 
 
 class AttributeDescriptorTestCase(CsvGeneratorTestCase):
@@ -94,3 +119,41 @@ class AttributeDescriptorTestCase(CsvGeneratorTestCase):
         """
         descriptor = AttributeDescriptor.for_model(self.generator_1)
         self.assertEqual(descriptor['all_attr'], 'Overridden Attribute')
+
+    def test_generates_instance(self):
+        """
+        The for_model class method should return the correct instance
+        """
+        self.assertIsInstance(AttributeDescriptor.for_model(self.generator_1), AttributeDescriptor)
+
+
+class NoopResolverTestCase(CsvGeneratorTestCase):
+    """
+    Tests the NoopResolver
+    """
+    def test_fields(self):
+        """
+        The resolver instance should contain the correct fields
+        """
+        resolver = NoopResolver.for_model(self.generator_1)
+        self.assertEqual(resolver['__empty__'], 'Empty cell')
+
+    def test_resolve_returns_empty_string(self):
+        """
+        The resolve method should return an empty string
+        """
+        resolver = NoopResolver.for_model(self.generator_1)
+        self.assertEqual(resolver.resolve(self.generator_1, '__empty__'), '')
+
+    def test_resolve_raises_exception(self):
+        """
+        The resolve method should raise an exception
+        """
+        resolver = NoopResolver.for_model(self.generator_1)
+        self.assertRaises(DescriptorException, resolver.resolve, self.generator_1, 'foo')
+
+    def test_generates_instance(self):
+        """
+        The for_model class method should return the correct instance
+        """
+        self.assertIsInstance(NoopResolver.for_model(self.generator_1), NoopResolver)
