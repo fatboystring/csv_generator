@@ -71,30 +71,13 @@ class SimpleCsvGeneratorTestCase(TestCase):
         The models title should be used as its unicode representation
         """
         instance = CsvGenerator(title='test title')
-        self.assertEqual('test title', unicode(instance))
+        self.assertEqual('test title', str(instance))
 
 
 class CsvGeneratorModelTestCase(CsvGeneratorTestCase):
     """
     Tests the CsvGenerator Model
     """
-    def test_available_fields(self):
-        """
-        The available_fields property should return a dict of model fields
-        """
-        self.assertEqual(
-            self.generator_1.available_fields['title'],
-            TestModel._meta.get_field('title').verbose_name
-        )
-        self.assertEqual(
-            self.generator_1.available_fields['text'],
-            TestModel._meta.get_field('text').verbose_name
-        )
-        self.assertEqual(
-            self.generator_1.available_fields['date_created'],
-            TestModel._meta.get_field('date_created').verbose_name
-        )
-
     def test_get_meta_class(self):
         """
         The method should return the meta class for the associated content type
@@ -149,6 +132,10 @@ class CsvGeneratorModelTestCase(CsvGeneratorTestCase):
             ''
         )
 
+    @override_settings(CSV_GENERATOR_AVAILABLE_ATTRIBUTES={
+        'all': {'all_attr': 'All Attribute'},
+        'tests.testmodel': {'test_attr': 'Test Attribute'}
+    })
     def test__resolve_attribute_calls_method(self):
         """
         The method should return an empty string for a missing attribute
@@ -159,45 +146,6 @@ class CsvGeneratorModelTestCase(CsvGeneratorTestCase):
             instance.test_attr()
         )
 
-    @override_settings(CSV_GENERATOR_AVAILABLE_ATTRIBUTES={'foo': 'bar'})
-    def test__get_available_attributes(self):
-        """
-        The _get_available_attributes method should return attributes
-        """
-        extra_attributes = self.generator_1._get_available_attributes()
-        self.assertEqual(extra_attributes, {'foo': 'bar'})
-
-    @override_settings(CSV_GENERATOR_AVAILABLE_ATTRIBUTES={
-        'all': {'all_attr': 'All Attribute'},
-        'tests.testmodel': {'test_attr': 'Test Attribute'},
-        'tests.testmodel2': {'test_attr_2': 'Test Attribute 2'},
-    })
-    def test_available_attributes(self):
-        """
-        Gets available attributes for the instance
-        """
-        self.assertEqual(self.generator_1.available_attributes, {
-            'all_attr': 'All Attribute',
-            'test_attr': 'Test Attribute'
-        })
-
-    @override_settings(CSV_GENERATOR_AVAILABLE_ATTRIBUTES={
-        'all': {'all_attr': 'All Attribute'},
-        'tests.testmodel': {
-            'test_attr': 'Test Attribute',
-            'all_attr': 'Overridden Attribute'
-        },
-        'tests.testmodel2': {'test_attr_2': 'Test Attribute 2'},
-    })
-    def test_available_attributes_takes_model_attr_over_all(self):
-        """
-        Gets available attributes for the instance
-        """
-        self.assertEqual(self.generator_1.available_attributes, {
-            'all_attr': 'Overridden Attribute',
-            'test_attr': 'Test Attribute'
-        })
-
     @override_settings(CSV_GENERATOR_AVAILABLE_ATTRIBUTES={
         'all': {'all_attr': 'All Attribute'},
         'tests.testmodel': {'test_attr': 'Test Attribute'}
@@ -206,11 +154,9 @@ class CsvGeneratorModelTestCase(CsvGeneratorTestCase):
         """
         Gets all attributes for the instance
         """
-        attributes = {
-            'all_attr': 'All Attribute',
-            'test_attr': 'Test Attribute'
-        }
-        attributes.update(self.generator_1.available_fields)
+        attributes = {}
+        for descriptor_class in self.generator_1.CSV_GENERATOR_ATTRIBUTE_DESCRIPTOR_CLASSES:
+            attributes.update(descriptor_class.for_model(self.generator_1))
         self.assertEqual(attributes, self.generator_1.all_attributes)
 
 

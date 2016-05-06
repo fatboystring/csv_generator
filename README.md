@@ -167,5 +167,9 @@ queryset = MyModel.objects.all()
 response = generator.generate(response, queryset)
 ```
 
+## Release History
 
-
+- 0.1: Initial Release
+- 0.2: Bug fixes relating to missing templates in pypi package
+- 0.3: Django 1.7 compatibility
+- 0.4: Attribute descriptor/Empty cell implementation
