@@ -3,6 +3,7 @@
 Models for the csv_generator app
 """
 from __future__ import unicode_literals
+from csv_generator.attribute_descriptors import FieldDescriptor, AttributeDescriptor, NoopResolver, DescriptorException
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ImproperlyConfigured
@@ -63,6 +64,12 @@ class CsvGenerator(models.Model):
 
     objects = CsvGeneratorQueryset.as_manager()
 
+    CSV_GENERATOR_ATTRIBUTE_DESCRIPTOR_CLASSES = (
+        FieldDescriptor,
+        AttributeDescriptor,
+        NoopResolver
+    )
+
     def __unicode__(self):
         """
         Unicode representation of the instance
@@ -85,21 +92,7 @@ class CsvGenerator(models.Model):
         )
         return import_string(csv_generator_writer_class_path)
 
-    @staticmethod
-    def _get_available_attributes():
-        """
-        Helper method to get extra attributes defined in the settings
-
-        :return: dict
-        """
-        return getattr(
-            settings,
-            'CSV_GENERATOR_AVAILABLE_ATTRIBUTES',
-            {}
-        )
-
-    @staticmethod
-    def _resolve_attribute(instance, attr_name):
+    def _resolve_attribute(self, instance, attr_name):
         """
         Helper method for resolving a value from a given attribute on the model
         instance. Will call methods and return their returned data values
@@ -112,40 +105,16 @@ class CsvGenerator(models.Model):
 
         :return: unicode string
         """
-        value = getattr(instance, attr_name, '')
-        if callable(value):
-            value = value()
-        return unicode(value)
-
-    @property
-    def available_fields(self):
-        """
-        Method for getting available fields on the model
-
-        :return: Dict of available fields on the model
-        """
-        return dict(
-            map(
-                lambda x: (x.name, x.verbose_name),
-                self.get_meta_class().fields
-            )
-        )
-
-    @property
-    def available_attributes(self):
-        """
-        Gets extra attributes for the model class specified on the instance
-
-        :return: dict
-        """
-        model_label = '{0}.{1}'.format(
-            self.get_meta_class().app_label,
-            self.get_meta_class().model_name
-        )
-        all_attrs = self._get_available_attributes().get('all', {})
-        model_attrs = self._get_available_attributes().get(model_label, {})
-        all_attrs.update(model_attrs)
-        return all_attrs
+        value = ''
+        for descriptor_class in self.CSV_GENERATOR_ATTRIBUTE_DESCRIPTOR_CLASSES:
+            descriptor = descriptor_class.for_model(self)
+            try:
+                value = descriptor.resolve(instance, attr_name)
+            except DescriptorException:
+                continue
+            else:
+                break
+        return value
 
     @property
     def all_attributes(self):
@@ -154,9 +123,9 @@ class CsvGenerator(models.Model):
 
         :return: Dict
         """
-        attributes = self.available_attributes
-        fields = self.available_fields
-        attributes.update(fields)
+        attributes = {}
+        for descriptor_class in self.CSV_GENERATOR_ATTRIBUTE_DESCRIPTOR_CLASSES:
+            attributes.update(descriptor_class.for_model(self))
         return attributes
 
     def _get_csv_writer(self, handle, **kwargs):
@@ -174,19 +143,6 @@ class CsvGenerator(models.Model):
         :return: Meta class
         """
         return self.content_type.model_class()._meta
-
-    def get_field(self, field_name):
-        """
-        Method for getting a field from the associated model by its name
-
-        :param field_name: The name of the field to retrieve
-        :type field_name: str|unicode
-
-        :return: Field
-        """
-        if field_name not in self.available_fields:
-            return None
-        return self.get_meta_class().get_field(field_name)
 
     def generate(self, handle, queryset, **kwargs):
         """

@@ -4,6 +4,7 @@ Tests the csv_generator CsvGeneratorColumn model
 """
 from __future__ import unicode_literals
 from csv_generator.models import CsvGenerator, CsvGeneratorColumn
+from csv_generator.tests.models import TestModel
 from csv_generator.tests.utils import CsvGeneratorColumnTestCase
 from django.db import models
 from django.test import override_settings, TestCase
@@ -83,7 +84,7 @@ class CsvGeneratorColumnModelTestCase(CsvGeneratorColumnTestCase):
         self.column_1.model_field = 'title'
         self.assertEqual(
             self.column_1.get_column_heading(),
-            self.generator_1.get_field('title').verbose_name
+            TestModel._meta.get_field('title').verbose_name
         )
 
     @override_settings(CSV_GENERATOR_AVAILABLE_ATTRIBUTES={
