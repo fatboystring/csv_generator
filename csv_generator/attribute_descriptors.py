@@ -41,7 +41,7 @@ class BaseDescriptor(dict):
         value = getattr(instance, attr_name, '')
         if callable(value):
             value = value()
-        return str(value)
+        return '{0}'.format(value)
 
     @classmethod
     def for_model(cls, model):
