@@ -12,6 +12,7 @@ from csv_generator.utils import UnicodeWriter
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models
+from django.http import HttpResponse
 from django.test import TestCase, override_settings
 from mock import Mock, patch
 import StringIO
@@ -257,14 +258,26 @@ class CsvGeneratorGenerateModelTestCase(CsvGeneratorColumnTestCase):
         )
         self.generator_1.generate(Mock(), TestModel.objects.all())
         patched_method.return_value.writerow.assert_any_call(map(
-            lambda x: unicode(getattr(self.instance_1, x, '')), field_names
+            lambda x: '{0}'.format(getattr(self.instance_1, x, '')), field_names
         ))
         patched_method.return_value.writerow.assert_any_call(map(
-            lambda x: unicode(getattr(self.instance_2, x, '')), field_names
+            lambda x: '{0}'.format(getattr(self.instance_2, x, '')), field_names
         ))
         patched_method.return_value.writerow.assert_any_call(map(
-            lambda x: unicode(getattr(self.instance_3, x, '')), field_names
+            lambda x: '{0}'.format(getattr(self.instance_3, x, '')), field_names
         ))
+
+    def test_handles_unicode(self):
+        """
+        The csv generator should not error when accented characters are passed to the csv generator
+        """
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="my_csv.csv"'
+        self.instance_1.title = 'áéíóúüñ¿¡'
+        self.instance_1.save()
+        self.instance_2.title = '会意字 / 會意字'
+        self.instance_2.save()
+        self.generator_1.generate(response, TestModel.objects.all())
 
 
 class CsvGeneratorQuerySetTestCase(CsvGeneratorTestCase):
