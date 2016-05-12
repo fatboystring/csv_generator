@@ -8,7 +8,7 @@ from csv_generator.attribute_descriptors import (
     BaseDescriptor,
     AttributeDescriptor,
     FieldDescriptor,
-    NoopResolver
+    NoopDescriptor
 )
 from csv_generator.tests.models import TestModel
 from csv_generator.tests.utils import CsvGeneratorTestCase
@@ -127,33 +127,33 @@ class AttributeDescriptorTestCase(CsvGeneratorTestCase):
         self.assertIsInstance(AttributeDescriptor.for_model(self.generator_1), AttributeDescriptor)
 
 
-class NoopResolverTestCase(CsvGeneratorTestCase):
+class NoopDescriptorTestCase(CsvGeneratorTestCase):
     """
-    Tests the NoopResolver
+    Tests the NoopDescriptor
     """
     def test_fields(self):
         """
         The resolver instance should contain the correct fields
         """
-        resolver = NoopResolver.for_model(self.generator_1)
+        resolver = NoopDescriptor.for_model(self.generator_1)
         self.assertEqual(resolver['__empty__'], 'Empty cell')
 
     def test_resolve_returns_empty_string(self):
         """
         The resolve method should return an empty string
         """
-        resolver = NoopResolver.for_model(self.generator_1)
+        resolver = NoopDescriptor.for_model(self.generator_1)
         self.assertEqual(resolver.resolve(self.generator_1, '__empty__'), '')
 
     def test_resolve_raises_exception(self):
         """
         The resolve method should raise an exception
         """
-        resolver = NoopResolver.for_model(self.generator_1)
+        resolver = NoopDescriptor.for_model(self.generator_1)
         self.assertRaises(DescriptorException, resolver.resolve, self.generator_1, 'foo')
 
     def test_generates_instance(self):
         """
         The for_model class method should return the correct instance
         """
-        self.assertIsInstance(NoopResolver.for_model(self.generator_1), NoopResolver)
+        self.assertIsInstance(NoopDescriptor.for_model(self.generator_1), NoopDescriptor)

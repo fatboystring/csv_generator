@@ -118,7 +118,7 @@ class AttributeDescriptor(BaseDescriptor):
         return AttributeDescriptor(all_attrs)
 
 
-class NoopResolver(BaseDescriptor):
+class NoopDescriptor(BaseDescriptor):
     """
     Class method for creating a descriptor instance
     for a given CsvGenerator model instance
@@ -139,7 +139,7 @@ class NoopResolver(BaseDescriptor):
 
         :return: NoopResolver instance
         """
-        return NoopResolver({'__empty__': 'Empty cell'})
+        return NoopDescriptor({'__empty__': 'Empty cell'})
 
     def resolve(self, instance, attr_name):
         """

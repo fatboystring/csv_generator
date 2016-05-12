@@ -3,7 +3,12 @@
 Models for the csv_generator app
 """
 from __future__ import unicode_literals
-from csv_generator.attribute_descriptors import FieldDescriptor, AttributeDescriptor, NoopResolver, DescriptorException
+from csv_generator.attribute_descriptors import (
+    FieldDescriptor,
+    AttributeDescriptor,
+    NoopDescriptor,
+    DescriptorException
+)
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ImproperlyConfigured
@@ -67,7 +72,7 @@ class CsvGenerator(models.Model):
     CSV_GENERATOR_ATTRIBUTE_DESCRIPTOR_CLASSES = (
         FieldDescriptor,
         AttributeDescriptor,
-        NoopResolver
+        NoopDescriptor
     )
 
     def __unicode__(self):
