@@ -157,7 +157,7 @@ class CsvGeneratorModelTestCase(CsvGeneratorTestCase):
         """
         attributes = {}
         for descriptor_class in self.generator_1.CSV_GENERATOR_ATTRIBUTE_DESCRIPTOR_CLASSES:
-            attributes.update(descriptor_class.for_model(self.generator_1))
+            attributes.update(descriptor_class.for_model(TestModel))
         self.assertEqual(attributes, self.generator_1.all_attributes)
 
 
