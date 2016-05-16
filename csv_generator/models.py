@@ -6,6 +6,7 @@ from __future__ import unicode_literals
 from csv_generator.attribute_descriptors import (
     FieldDescriptor,
     AttributeDescriptor,
+    ForeignKeyDescriptor,
     NoopDescriptor,
     DescriptorException
 )
@@ -72,6 +73,7 @@ class CsvGenerator(models.Model):
     CSV_GENERATOR_ATTRIBUTE_DESCRIPTOR_CLASSES = (
         FieldDescriptor,
         AttributeDescriptor,
+        ForeignKeyDescriptor,
         NoopDescriptor
     )
 
@@ -111,8 +113,9 @@ class CsvGenerator(models.Model):
         :return: unicode string
         """
         value = ''
+        model_class = self.content_type.model_class()
         for descriptor_class in self.CSV_GENERATOR_ATTRIBUTE_DESCRIPTOR_CLASSES:
-            descriptor = descriptor_class.for_model(self)
+            descriptor = descriptor_class.for_model(model_class)
             try:
                 value = descriptor.resolve(instance, attr_name)
             except DescriptorException:
@@ -129,8 +132,9 @@ class CsvGenerator(models.Model):
         :return: Dict
         """
         attributes = {}
+        model_class = self.content_type.model_class()
         for descriptor_class in self.CSV_GENERATOR_ATTRIBUTE_DESCRIPTOR_CLASSES:
-            attributes.update(descriptor_class.for_model(self))
+            attributes.update(descriptor_class.for_model(model_class))
         return attributes
 
     def _get_csv_writer(self, handle, **kwargs):
