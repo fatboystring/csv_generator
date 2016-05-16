@@ -1,4 +1,4 @@
-[![Django CSV generator on pypi](https://img.shields.io/badge/pypi-0.4.3-green.svg)](https://pypi.python.org/pypi/csv_generator)
+[![Django CSV generator on pypi](https://img.shields.io/badge/pypi-0.5.0-green.svg)](https://pypi.python.org/pypi/csv_generator)
 ![MIT license](https://img.shields.io/badge/licence-MIT-blue.svg)
 ![Build status](https://travis-ci.org/fatboystring/csv_generator.svg?branch=master)
 
@@ -173,3 +173,4 @@ response = generator.generate(response, queryset)
 - 0.2: Bug fixes relating to missing templates in pypi package
 - 0.3: Django 1.7 compatibility
 - 0.4: Attribute descriptor/Empty cell implementation
+- 0.5: ForeignKey descriptor implementation allowing foreign key and OneToOne key relationships to be traversed
