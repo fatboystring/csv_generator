@@ -233,3 +233,13 @@ class ForeignKeyDescriptorTestCase(CsvGeneratorTestCase):
         descriptor = ForeignKeyDescriptor.for_model(TestModel)
         self.assertEqual(descriptor.resolve(instance_1, 'other_model__title'), '')
         self.assertEqual(descriptor.resolve(instance_1, 'other_model_2__title'), '')
+
+    def test_get_descriptor_classes(self):
+        """
+        The get_descriptor_classes method should return a tuple containing the correct Descriptor classes
+        """
+        descriptor_classes = ForeignKeyDescriptor.get_descriptor_classes()
+        self.assertIn(ForeignKeyDescriptor, descriptor_classes)
+        self.assertIn(AttributeDescriptor, descriptor_classes)
+        self.assertIn(FieldDescriptor, descriptor_classes)
+        self.assertNotIn(NoopDescriptor, descriptor_classes)

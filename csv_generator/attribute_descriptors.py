@@ -138,6 +138,15 @@ class ForeignKeyDescriptor(BaseDescriptor):
     Descriptor for traversing foreign key relationships
     """
     @classmethod
+    def get_descriptor_classes(cls):
+        """
+        Method for getting a tuple of descriptor classes that apply to related models
+
+        :return: Tuple of descriptor classes
+        """
+        return FieldDescriptor, AttributeDescriptor, ForeignKeyDescriptor
+
+    @classmethod
     def get_fields(cls, model):
         """
         Method for getting fields for the descriptor
@@ -179,9 +188,8 @@ class ForeignKeyDescriptor(BaseDescriptor):
         :return: Dict of related field data
         """
         field_map = {}
-        descriptor_classes = (FieldDescriptor, AttributeDescriptor, ForeignKeyDescriptor)
 
-        for descriptor_class in descriptor_classes:
+        for descriptor_class in cls.get_descriptor_classes():
             descriptor = descriptor_class.for_model(field.rel.to)
             field_map.update(descriptor)
 
@@ -220,21 +228,20 @@ class ForeignKeyDescriptor(BaseDescriptor):
         """
         self.check_attr(attr_name)
         attr_names = attr_name.split('__')
-        value = instance
+        attr_name = attr_names.pop(0)
+        value = getattr(instance, attr_name)
 
-        while len(attr_names) > 0:
-            attr_name = attr_names.pop(0)
-            value = getattr(value, attr_name)
-            if not value:
-                break
+        if value:
+            for descriptor_class in self.get_descriptor_classes():
+                descriptor = descriptor_class.for_model(value.__class__)
+                try:
+                    value = descriptor.resolve(value, '__'.join(attr_names))
+                except DescriptorException:
+                    pass
+                else:
+                    break
 
-        if callable(value):
-            value = value()
-
-        if value is None:
-            value = ''
-
-        return '{0}'.format(value)
+        return '{0}'.format(value or '')
 
 
 class NoopDescriptor(BaseDescriptor):
