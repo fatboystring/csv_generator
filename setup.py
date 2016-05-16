@@ -21,6 +21,6 @@ setup(
             'Programming Language :: Python :: 2.7',
       ],
       include_package_data=True,
-      keywords='csv generator queryset django',
+      keywords=['csv generator', 'queryset', 'django'],
       install_requires=[],
 )
