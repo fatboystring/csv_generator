@@ -10,6 +10,7 @@ setup(
       author='Dan Stringer',
       author_email='dan.stringer1983@googlemail.com',
       url='https://github.com/fatboystring/csv_generator/',
+      download_url='https://github.com/fatboystring/csv_generator/tarball/0.5.0',
       packages=find_packages(exclude=['app']),
       license='MIT',
       classifiers=[
@@ -22,5 +23,5 @@ setup(
       ],
       include_package_data=True,
       keywords=['csv generator', 'queryset', 'django'],
-      install_requires=[],
+      install_requires=[]
 )
