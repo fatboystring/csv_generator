@@ -4,6 +4,7 @@ Attribute descriptors for the csv_generator app
 """
 from __future__ import unicode_literals
 from django.conf import settings
+from django.db import models
 
 
 class DescriptorException(Exception):
@@ -60,23 +61,37 @@ class FieldDescriptor(BaseDescriptor):
     """
     Descriptor class for model fields on the model instance
     """
+
+    @classmethod
+    def get_fields(cls, model):
+        """
+        Method for getting the fields required for processing by the descriptor
+
+        :param model: The model the get fields for
+        :type model: django.db.models.Model
+
+        :return: list of model fields
+        """
+        return filter(
+            lambda x: not isinstance(x, (models.ForeignKey, models.ManyToManyField, models.OneToOneField)),
+            model._meta.fields
+        )
+
     @classmethod
     def for_model(cls, model):
         """
         Class method for creating a descriptor instance
         for a given CsvGenerator model instance
 
-        :param model: CsvGenerator model
+        :param model: Model instance
         :type model: csv_generator.models.CsvGenerator
 
         :return: FieldDescriptor instance
         """
-        return FieldDescriptor(
-            map(
-                lambda x: (x.name, x.verbose_name),
-                model.get_meta_class().fields
-            )
-        )
+        return FieldDescriptor(map(
+            lambda x: (x.name, x.verbose_name.capitalize()),
+            FieldDescriptor.get_fields(model)
+        ))
 
 
 class AttributeDescriptor(BaseDescriptor):
@@ -108,14 +123,118 @@ class AttributeDescriptor(BaseDescriptor):
         :return: AttributeDescriptor instance
         """
         model_label = '{0}.{1}'.format(
-            model.get_meta_class().app_label,
-            model.get_meta_class().model_name
+            model._meta.app_label,
+            model._meta.model_name
         )
         attributes = cls.get_available_attributes()
         all_attrs = attributes.get('all', {})
         model_attrs = attributes.get(model_label, {})
         all_attrs.update(model_attrs)
         return AttributeDescriptor(all_attrs)
+
+
+class ForeignKeyDescriptor(BaseDescriptor):
+    """
+    Descriptor for traversing foreign key relationships
+    """
+    @classmethod
+    def get_fields(cls, model):
+        """
+        Method for getting fields for the descriptor
+
+        :param model: model instance
+        :type model: django.db.models.Model
+
+        """
+        return filter(
+            lambda x: isinstance(x, models.ForeignKey),
+            model._meta.fields
+        )
+
+    @classmethod
+    def field_data(cls, parent_field, child_field):
+        """
+        Generates and returns a tuple containing: (field_value, field_label)
+
+        :param parent_field: The parent model field
+        :param child_field: The child field
+
+        :return: tuple[unicode, unicode]
+        """
+        return (
+            '{0}__{1}'.format(parent_field.name, child_field[0]),
+            '{0} ---> {1}'.format(
+                parent_field.verbose_name.capitalize(),
+                child_field[1].capitalize()
+            )
+        )
+
+    @classmethod
+    def process_field(cls, field):
+        """
+        Processes a given field on the model
+        Resolves attributes/fields from the fields related model
+
+        :param field: ForeignKey field from the parent model
+        :return: Dict of related field data
+        """
+        field_map = {}
+        descriptor_classes = (FieldDescriptor, AttributeDescriptor, ForeignKeyDescriptor)
+
+        for descriptor_class in descriptor_classes:
+            descriptor = descriptor_class.for_model(field.rel.to)
+            field_map.update(descriptor)
+
+        return dict([
+            ForeignKeyDescriptor.field_data(field, other_model_field)
+            for other_model_field in field_map.items()
+        ])
+
+    @classmethod
+    def for_model(cls, model):
+        """
+        Class method for creating a descriptor instance
+        for a given CsvGenerator model instance
+
+        :param model: CsvGenerator model
+        :type model: csv_generator.models.CsvGenerator
+
+        :return: ForeignKeyDescriptor instance
+        """
+        fields_map = {}
+        for field in ForeignKeyDescriptor.get_fields(model):
+            fields_map.update(ForeignKeyDescriptor.process_field(field))
+        return ForeignKeyDescriptor(**fields_map)
+
+    def resolve(self, instance, attr_name):
+        """
+        Custom method for resolving an attribute across relations on the model instance
+
+        :param instance: The model instance to resolve the attribute from
+        :type instance: django.db.models.Model
+
+        :param attr_name: The name of the model attribute to resolve
+        :type attr_name: unicode|str
+
+        :return: unicode|str
+        """
+        self.check_attr(attr_name)
+        attr_names = attr_name.split('__')
+        value = instance
+
+        while len(attr_names) > 0:
+            attr_name = attr_names.pop(0)
+            value = getattr(value, attr_name)
+            if not value:
+                break
+
+        if callable(value):
+            value = value()
+
+        if value is None:
+            value = ''
+
+        return '{0}'.format(value)
 
 
 class NoopDescriptor(BaseDescriptor):
