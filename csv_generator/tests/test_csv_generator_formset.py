@@ -35,7 +35,7 @@ class CsvGeneratorColumnFormSetTestCase(CsvGeneratorTestCase):
             forms.BaseInlineFormSet
         ))
 
-    @skipUnless(get_version() > '1.8', 'Not implemented in django < 1.8')
+    @skipUnless(get_version() > '1.9', 'Not implemented in django < 1.9')
     def test_get_form_kwargs(self):
         """
         The method should add the csv_generator instance to the form kwargs
@@ -44,7 +44,7 @@ class CsvGeneratorColumnFormSetTestCase(CsvGeneratorTestCase):
         form_kwargs = instance.get_form_kwargs(1)
         self.assertEqual(form_kwargs['csv_generator'], self.generator_1)
 
-    @skipUnless(get_version() < '1.8', 'Not implemented in django > 1.7')
+    @skipUnless(get_version() < '1.9', 'Not implemented in django > 1.8')
     def test__construct_form(self):
         """
         The method should add the csv generator to the form kwargs
@@ -57,7 +57,7 @@ class CsvGeneratorColumnFormSetTestCase(CsvGeneratorTestCase):
             self.generator_1.all_attributes.items()
         )
 
-    @skipUnless(get_version() < '1.8', 'Not implemented in django > 1.7')
+    @skipUnless(get_version() < '1.9', 'Not implemented in django > 1.8')
     def test_empty_form(self):
         """
         The property should add the csv generator to the form kwargs
