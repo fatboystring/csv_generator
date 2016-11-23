@@ -9,3 +9,4 @@ django_setuptest-0.2.1-py2.7.egg/
 pep8-1.7.0-py2.7.egg/
 pep8.txt
 dist
+.tox

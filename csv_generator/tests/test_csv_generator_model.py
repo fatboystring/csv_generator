@@ -195,15 +195,6 @@ class CsvGeneratorGenerateModelTestCase(CsvGeneratorColumnTestCase):
         patched_method.assert_called_with(file_mock)
 
     @patch('csv_generator.models.CsvGenerator._get_csv_writer')
-    def test_generate_instantiates_csv_writer(self, patched_method):
-        """
-        The generate method should call _get_csv_writer
-        """
-        file_mock = Mock()
-        self.generator_1.generate(file_mock, TestModel.objects.all())
-        patched_method.assert_called_with(file_mock)
-
-    @patch('csv_generator.models.CsvGenerator._get_csv_writer')
     def test_generate_returns_handle(self, patched_method):
         """
         The generate method should return the handle

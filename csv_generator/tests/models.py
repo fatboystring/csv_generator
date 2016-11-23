@@ -61,4 +61,5 @@ class TestModel4(models.Model):
     text = models.TextField()
     date_created = models.DateTimeField(auto_now_add=True)
 
+
 admin.site.register(TestModel2, CsvExportAdmin)
