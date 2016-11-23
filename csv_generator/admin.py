@@ -38,10 +38,10 @@ class ContentTypeListFilter(admin.SimpleListFilter):
         content_type_ids = model_admin.model.objects.values_list(
             'content_type', flat=True
         ).distinct()
-        return map(
+        return list(map(
             lambda x: (x.pk, x.name),
             ContentType.objects.filter(pk__in=content_type_ids)
-        )
+        ))
 
     def queryset(self, request, queryset):
         """

@@ -72,10 +72,10 @@ class FieldDescriptor(BaseDescriptor):
 
         :return: list of model fields
         """
-        return filter(
+        return list(filter(
             lambda x: not isinstance(x, (models.ForeignKey, models.ManyToManyField, models.OneToOneField)),
             model._meta.fields
-        )
+        ))
 
     @classmethod
     def for_model(cls, model):
@@ -88,10 +88,10 @@ class FieldDescriptor(BaseDescriptor):
 
         :return: FieldDescriptor instance
         """
-        return FieldDescriptor(map(
+        return FieldDescriptor(list(map(
             lambda x: (x.name, x.verbose_name.capitalize()),
             FieldDescriptor.get_fields(model)
-        ))
+        )))
 
 
 class AttributeDescriptor(BaseDescriptor):
@@ -155,10 +155,10 @@ class ForeignKeyDescriptor(BaseDescriptor):
         :type model: django.db.models.Model
 
         """
-        return filter(
+        return list(filter(
             lambda x: isinstance(x, models.ForeignKey),
             model._meta.fields
-        )
+        ))
 
     @classmethod
     def field_data(cls, parent_field, child_field):

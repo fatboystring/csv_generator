@@ -178,12 +178,12 @@ class CsvGenerator(models.Model):
             writer.writerow(self.columns.column_headings())
 
         # Get a list of field names
-        field_names = map(lambda x: x.model_field, self.columns.all())
+        field_names = list(map(lambda x: x.model_field, self.columns.all()))
         for instance in queryset:
-            csv_row = map(
+            csv_row = list(map(
                 lambda x: self._resolve_attribute(instance, x),
                 field_names
-            )
+            ))
             writer.writerow(csv_row)
 
         return handle
@@ -199,7 +199,7 @@ class CsvGeneratorColumnQueryset(models.QuerySet):
 
         :return: list of column heading strings
         """
-        return map(lambda x: x.get_column_heading(), self)
+        return list(map(lambda x: x.get_column_heading(), self))
 
 
 class CsvGeneratorColumn(models.Model):

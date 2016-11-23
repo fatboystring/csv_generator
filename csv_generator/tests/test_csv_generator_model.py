@@ -248,15 +248,15 @@ class CsvGeneratorGenerateModelTestCase(CsvGeneratorColumnTestCase):
             self.generator_1.columns.all()
         )
         self.generator_1.generate(Mock(), TestModel.objects.all())
-        patched_method.return_value.writerow.assert_any_call(map(
+        patched_method.return_value.writerow.assert_any_call(list(map(
             lambda x: '{0}'.format(getattr(self.instance_1, x, '')), field_names
-        ))
-        patched_method.return_value.writerow.assert_any_call(map(
+        )))
+        patched_method.return_value.writerow.assert_any_call(list(map(
             lambda x: '{0}'.format(getattr(self.instance_2, x, '')), field_names
-        ))
-        patched_method.return_value.writerow.assert_any_call(map(
+        )))
+        patched_method.return_value.writerow.assert_any_call(list(map(
             lambda x: '{0}'.format(getattr(self.instance_3, x, '')), field_names
-        ))
+        )))
 
     def test_handles_unicode(self):
         """

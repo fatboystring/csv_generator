@@ -53,8 +53,8 @@ class CsvGeneratorColumnFormSetTestCase(CsvGeneratorTestCase):
         form = instance._construct_form(1)
         self.assertIsInstance(form, CsvGeneratorColumnForm)
         self.assertEqual(
-            form.fields['model_field'].choices,
-            self.generator_1.all_attributes.items()
+            set(form.fields['model_field'].choices),
+            set(self.generator_1.all_attributes.items())
         )
 
     @skipUnless(get_version() < '1.9', 'Not implemented in django > 1.8')
@@ -66,6 +66,6 @@ class CsvGeneratorColumnFormSetTestCase(CsvGeneratorTestCase):
         form = instance.empty_form
         self.assertIsInstance(form, CsvGeneratorColumnForm)
         self.assertEqual(
-            form.fields['model_field'].choices,
-            self.generator_1.all_attributes.items()
+            set(form.fields['model_field'].choices),
+            set(self.generator_1.all_attributes.items())
         )
