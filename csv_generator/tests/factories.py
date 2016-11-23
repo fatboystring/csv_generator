@@ -15,7 +15,7 @@ class CsvGeneratorFactory(factory.DjangoModelFactory):
     Factory for CsvGenerator models
     """
     title = factory.Sequence(lambda x: 'Title {0}'.format(x))
-    content_type = ContentType.objects.get_for_model(TestModel)
+    content_type = factory.LazyAttribute(lambda x: ContentType.objects.get_for_model(TestModel))
 
     class Meta(object):
         """
