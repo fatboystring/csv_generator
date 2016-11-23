@@ -4,4 +4,4 @@ fake-factory==0.5.5
 ipaddress==1.0.16
 python-dateutil==2.5.0
 six==1.10.0
-wsgiref==0.1.2
+wsgiref==0.1.2; python_version < '3'
