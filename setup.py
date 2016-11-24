@@ -10,7 +10,7 @@ setup(
       author='Dan Stringer',
       author_email='dan.stringer1983@googlemail.com',
       url='https://github.com/fatboystring/csv_generator/',
-      download_url='https://github.com/fatboystring/csv_generator/tarball/0.5.0',
+      download_url='https://github.com/fatboystring/csv_generator/tarball/0.6.1',
       packages=find_packages(exclude=['app']),
       license='MIT',
       classifiers=[
