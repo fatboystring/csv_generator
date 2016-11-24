@@ -8,14 +8,12 @@ from csv_generator.tests.factories import TestModelFactory, TestModel2Factory
 from csv_generator.tests.models import TestModel, TestModel2
 from csv_generator.tests.utils import CsvGeneratorTestCase
 from csv_generator.tests.utils import CsvGeneratorColumnTestCase
-from csv_generator.utils import UnicodeWriter
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 from django.http import HttpResponse
 from django.test import TestCase, override_settings
 from mock import Mock, patch
-import StringIO
 
 
 class SimpleCsvGeneratorTestCase(TestCase):
@@ -88,26 +86,21 @@ class CsvGeneratorModelTestCase(CsvGeneratorTestCase):
     @override_settings(
         CSV_GENERATOR_WRITER_CLASS='csv_generator.utils.UnicodeWriter'
     )
-    def test_get_csv_writer_class(self):
+    @patch('csv_generator.models.get_csv_writer_class')
+    def test_get_csv_writer_class(self, patched_method):
         """
         The method should return the correct CSV Writer class
         """
-        self.assertEqual(
-            UnicodeWriter,
-            self.generator_1._get_csv_writer_class()
-        )
+        self.generator_1._get_csv_writer_class()
+        patched_method.assert_called_with()
 
-    @override_settings(
-        CSV_GENERATOR_WRITER_CLASS='csv_generator.utils.UnicodeWriter'
-    )
     def test_get_csv_writer(self):
         """
         The method should return a CSV Writer instance
         """
         mocked_file = Mock()
         instance = self.generator_1._get_csv_writer(mocked_file)
-        self.assertIsInstance(instance, UnicodeWriter)
-        self.assertEqual(instance.stream, mocked_file)
+        self.assertIsInstance(instance, self.generator_1._get_csv_writer_class())
 
     def test__resolve_attribute(self):
         """
@@ -178,12 +171,17 @@ class CsvGeneratorGenerateModelTestCase(CsvGeneratorColumnTestCase):
         """
         The method should raise an exception if passed an invalid queryset
         """
-        self.assertRaises(
-            ImproperlyConfigured,
-            self.generator_1.generate,
-            StringIO.StringIO(),
-            TestModel2.objects.all()
-        )
+        try:
+            import StringIO
+        except ImportError:
+            pass
+        else:
+            self.assertRaises(
+                ImproperlyConfigured,
+                self.generator_1.generate,
+                StringIO.StringIO(),
+                TestModel2.objects.all()
+            )
 
     @patch('csv_generator.models.CsvGenerator._get_csv_writer')
     def test_generate_instantiates_csv_writer(self, patched_method):
@@ -243,10 +241,10 @@ class CsvGeneratorGenerateModelTestCase(CsvGeneratorColumnTestCase):
         The generate method should write rows to the CSV
         """
         patched_method.return_value = Mock(methods=['writerow', 'writerows'])
-        field_names = map(
+        field_names = list(map(
             lambda x: x.model_field,
             self.generator_1.columns.all()
-        )
+        ))
         self.generator_1.generate(Mock(), TestModel.objects.all())
         patched_method.return_value.writerow.assert_any_call(list(map(
             lambda x: '{0}'.format(getattr(self.instance_1, x, '')), field_names
