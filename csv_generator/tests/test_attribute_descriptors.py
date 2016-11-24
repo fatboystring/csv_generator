@@ -86,7 +86,7 @@ class FieldDescriptorTestCase(CsvGeneratorTestCase):
         The get_fields method of the class should return the model fields
         """
         fields = FieldDescriptor.get_fields(TestModel)
-        field_names = map(lambda x: x.name, fields)
+        field_names = list(map(lambda x: x.name, fields))
         self.assertEqual(len(fields), 4)
         self.assertIn('id', field_names)
         self.assertIn('text', field_names)
@@ -184,7 +184,7 @@ class ForeignKeyDescriptorTestCase(CsvGeneratorTestCase):
         The get_fields method of the class should return the correct model fields
         """
         fields = ForeignKeyDescriptor.get_fields(TestModel)
-        field_names = map(lambda x: x.name, fields)
+        field_names = list(map(lambda x: x.name, fields))
         self.assertEqual(len(fields), 2)
         self.assertIn('other_model', field_names)
         self.assertIn('other_model_2', field_names)

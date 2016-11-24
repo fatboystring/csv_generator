@@ -10,11 +10,11 @@ from csv_generator.attribute_descriptors import (
     NoopDescriptor,
     DescriptorException
 )
-from django.conf import settings
+from csv_generator.utils import get_csv_writer_class
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models
-from django.utils.module_loading import import_string
+from django.utils.encoding import python_2_unicode_compatible
 
 
 class CsvGeneratorQueryset(models.QuerySet):
@@ -58,6 +58,7 @@ class CsvGeneratorQueryset(models.QuerySet):
         return self.for_content_type(ContentType.objects.get_for_model(model))
 
 
+@python_2_unicode_compatible
 class CsvGenerator(models.Model):
     """
     Model for storing a CSV Generator profile
@@ -77,7 +78,7 @@ class CsvGenerator(models.Model):
         NoopDescriptor
     )
 
-    def __unicode__(self):
+    def __str__(self):
         """
         Unicode representation of the instance
 
@@ -92,12 +93,7 @@ class CsvGenerator(models.Model):
 
         :return: Csv Writer Class
         """
-        csv_generator_writer_class_path = getattr(
-            settings,
-            'CSV_GENERATOR_WRITER_CLASS',
-            'csv_generator.utils.UnicodeWriter'
-        )
-        return import_string(csv_generator_writer_class_path)
+        return get_csv_writer_class()
 
     def _resolve_attribute(self, instance, attr_name):
         """
@@ -178,12 +174,12 @@ class CsvGenerator(models.Model):
             writer.writerow(self.columns.column_headings())
 
         # Get a list of field names
-        field_names = map(lambda x: x.model_field, self.columns.all())
+        field_names = list(map(lambda x: x.model_field, self.columns.all()))
         for instance in queryset:
-            csv_row = map(
+            csv_row = list(map(
                 lambda x: self._resolve_attribute(instance, x),
                 field_names
-            )
+            ))
             writer.writerow(csv_row)
 
         return handle
@@ -199,7 +195,7 @@ class CsvGeneratorColumnQueryset(models.QuerySet):
 
         :return: list of column heading strings
         """
-        return map(lambda x: x.get_column_heading(), self)
+        return list(map(lambda x: x.get_column_heading(), self))
 
 
 class CsvGeneratorColumn(models.Model):
