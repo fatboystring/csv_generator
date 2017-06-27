@@ -14,6 +14,7 @@ Supports the following versions of Django:
  - Django 1.8
  - Django 1.9
  - Django 1.10
+ - Django 1.11
 
 ## Installation
 
@@ -176,3 +177,4 @@ response = generator.generate(response, queryset)
 - 0.4: Attribute descriptor/Empty cell implementation
 - 0.5: ForeignKey descriptor implementation allowing foreign key and OneToOne key relationships to be traversed
 - 0.6: Support for django 1.10, python 3.4 and python 3.5
+- 0.7: Support for django 1.11
