@@ -8,6 +8,7 @@ from csv_generator.tests.factories import TestModelFactory, TestModel2Factory
 from csv_generator.tests.models import TestModel, TestModel2
 from csv_generator.tests.utils import CsvGeneratorTestCase
 from csv_generator.tests.utils import CsvGeneratorColumnTestCase
+from csv_generator.utils import get_related_model_for_field
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models
@@ -44,7 +45,7 @@ class SimpleCsvGeneratorTestCase(TestCase):
         """
         field = CsvGenerator._meta.get_field('content_type')
         self.assertIsInstance(field, models.ForeignKey)
-        self.assertEqual(field.rel.to, ContentType)
+        self.assertEqual(get_related_model_for_field(field), ContentType)
         self.assertEqual(field.related_query_name(), '+')
         self.assertFalse(field.blank)
         self.assertFalse(field.null)

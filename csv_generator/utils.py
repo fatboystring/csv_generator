@@ -4,6 +4,8 @@ Utils for the csv_generator app
 """
 from __future__ import unicode_literals
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
+from django.db.models.fields.related import RelatedField
 from django.utils.module_loading import import_string
 import codecs
 import csv
@@ -95,3 +97,21 @@ def get_csv_writer_class():
         except ImportError:
             pass
     return writer
+
+
+def get_related_model_for_field(field):
+    """
+    Helper function for retrieving the related model for a model field
+
+    :param field: Django model field instance
+    :return: Django model class
+    """
+    if not isinstance(field, RelatedField):
+        raise ImproperlyConfigured(
+            'Expected field "{0}" to be an instance of django.db.models.'
+            'fields.related.RelatedField'.format(field.__class__.__name__)
+        )
+
+    if hasattr(field, 'related_model'):
+        return field.related_model
+    return field.rel.to
