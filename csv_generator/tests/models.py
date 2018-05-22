@@ -17,8 +17,18 @@ class TestModel(models.Model):
         verbose_name='Model title'
     )
     text = models.TextField()
-    other_model = models.ForeignKey('TestModel2', blank=True, null=True)
-    other_model_2 = models.OneToOneField('TestModel3', blank=True, null=True)
+    other_model = models.ForeignKey(
+        'TestModel2',
+        blank=True,
+        null=True,
+        on_delete=models.CASCADE
+    )
+    other_model_2 = models.OneToOneField(
+        'TestModel3',
+        blank=True,
+        null=True,
+        on_delete=models.CASCADE
+    )
     other_models = models.ManyToManyField('TestModel4', blank=True, null=True)
     date_created = models.DateTimeField(auto_now_add=True)
 

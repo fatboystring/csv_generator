@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
                 ('include_headings', models.BooleanField(default=True)),
                 ('date_created', models.DateTimeField(auto_now_add=True)),
                 ('date_updated', models.DateTimeField(auto_now=True)),
-                ('content_type', models.ForeignKey(related_name='+', to='contenttypes.ContentType')),
+                ('content_type', models.ForeignKey(related_name='+', to='contenttypes.ContentType', on_delete=models.CASCADE)),
             ],
             options={
             },
@@ -34,7 +34,7 @@ class Migration(migrations.Migration):
                 ('order', models.PositiveIntegerField(default=0)),
                 ('date_created', models.DateTimeField(auto_now_add=True)),
                 ('date_updated', models.DateTimeField(auto_now=True)),
-                ('generator', models.ForeignKey(related_name='columns', to='csv_generator.CsvGenerator')),
+                ('generator', models.ForeignKey(related_name='columns', to='csv_generator.CsvGenerator', on_delete=models.CASCADE)),
             ],
             options={
                 'ordering': ['order'],

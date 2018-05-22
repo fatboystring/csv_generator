@@ -67,7 +67,11 @@ class CsvGenerator(models.Model):
     include_headings = models.BooleanField(default=True)
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
-    content_type = models.ForeignKey(ContentType, related_name='+')
+    content_type = models.ForeignKey(
+        ContentType,
+        related_name='+',
+        on_delete=models.CASCADE
+    )
 
     objects = CsvGeneratorQueryset.as_manager()
 
@@ -204,7 +208,11 @@ class CsvGeneratorColumn(models.Model):
     """
     column_heading = models.CharField(max_length=255, blank=True, null=True)
     model_field = models.CharField(max_length=255)
-    generator = models.ForeignKey(CsvGenerator, related_name='columns')
+    generator = models.ForeignKey(
+        CsvGenerator,
+        related_name='columns',
+        on_delete=models.CASCADE
+    )
     order = models.PositiveIntegerField(default=0)
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)

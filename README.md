@@ -1,4 +1,4 @@
-[![Django CSV generator on pypi](https://img.shields.io/badge/pypi-0.6.1-green.svg)](https://pypi.python.org/pypi/csv_generator)
+[![Django CSV generator on pypi](https://img.shields.io/badge/pypi-0.8.0-green.svg)](https://pypi.python.org/pypi/csv_generator)
 ![MIT license](https://img.shields.io/badge/licence-MIT-blue.svg)
 ![Build status](https://travis-ci.org/fatboystring/csv_generator.svg?branch=master)
 
@@ -15,6 +15,7 @@ Supports the following versions of Django:
  - Django 1.9
  - Django 1.10
  - Django 1.11
+ - Django 2.0
 
 ## Installation
 
@@ -178,3 +179,4 @@ response = generator.generate(response, queryset)
 - 0.5: ForeignKey descriptor implementation allowing foreign key and OneToOne key relationships to be traversed
 - 0.6: Support for django 1.10, python 3.4 and python 3.5
 - 0.7: Support for django 1.11
+- 0.8: Support for django 2.0 and python 3.6

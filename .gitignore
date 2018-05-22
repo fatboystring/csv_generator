@@ -10,3 +10,5 @@ pep8-1.7.0-py2.7.egg/
 pep8.txt
 dist
 .tox
+release.sh
+

@@ -6,6 +6,8 @@ from __future__ import unicode_literals
 from django.conf import settings
 from django.db import models
 
+from csv_generator.utils import get_related_model_for_field
+
 
 class DescriptorException(Exception):
     """
@@ -190,7 +192,8 @@ class ForeignKeyDescriptor(BaseDescriptor):
         field_map = {}
 
         for descriptor_class in cls.get_descriptor_classes():
-            descriptor = descriptor_class.for_model(field.rel.to)
+            related_model_class = get_related_model_for_field(field)
+            descriptor = descriptor_class.for_model(related_model_class)
             field_map.update(descriptor)
 
         return dict([

@@ -6,6 +6,7 @@ from __future__ import unicode_literals
 from csv_generator.models import CsvGenerator, CsvGeneratorColumn
 from csv_generator.tests.models import TestModel
 from csv_generator.tests.utils import CsvGeneratorColumnTestCase
+from csv_generator.utils import get_related_model_for_field
 from django.db import models
 from django.test import override_settings, TestCase
 
@@ -40,7 +41,7 @@ class SimpleCsvGeneratorColumnTestCase(TestCase):
         """
         field = CsvGeneratorColumn._meta.get_field('generator')
         self.assertIsInstance(field, models.ForeignKey)
-        self.assertEqual(field.rel.to, CsvGenerator)
+        self.assertEqual(get_related_model_for_field(field), CsvGenerator)
         self.assertEqual(field.related_query_name(), 'columns')
         self.assertFalse(field.blank)
         self.assertFalse(field.null)
