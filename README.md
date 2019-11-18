@@ -180,3 +180,4 @@ response = generator.generate(response, queryset)
 - 0.6: Support for django 1.10, python 3.4 and python 3.5
 - 0.7: Support for django 1.11
 - 0.8: Support for django 2.0 and python 3.6
+- 0.8.1: Support for django 2.1, 2.2 and python 3.7, 3.8

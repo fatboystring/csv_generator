@@ -37,6 +37,8 @@ class SelectCsvGeneratorFormTestCase(CsvGeneratorTestCase):
         The queryset should be overridden with the data passed to the form
         """
         self.assertEqual(
-            self.form.fields['generator'].queryset,
-            self.generators
+            self.form.fields['generator'].queryset.count(),
+            self.generators.count()
         )
+        for instance in self.form.fields['generator'].queryset:
+            self.assertIn(instance, self.generators)
