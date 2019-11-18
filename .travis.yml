@@ -10,6 +10,8 @@ addons:
     packages:
       - python3.5
       - python3.6
+      - python3.7
+      - python3.8
 env:
   - TOXENV=py27-django17
   - TOXENV=py27-django18
@@ -27,9 +29,27 @@ env:
   - TOXENV=py35-django110
   - TOXENV=py35-django111
   - TOXENV=py35-django20
+  - TOXENV=py35-django21
+  - TOXENV=py35-django22
   - TOXENV=py36-django18
   - TOXENV=py36-django19
   - TOXENV=py36-django110
   - TOXENV=py36-django111
   - TOXENV=py36-django20
+  - TOXENV=py36-django21
+  - TOXENV=py36-django22
+  - TOXENV=py37-django18
+  - TOXENV=py37-django19
+  - TOXENV=py37-django110
+  - TOXENV=py37-django111
+  - TOXENV=py37-django20
+  - TOXENV=py37-django21
+  - TOXENV=py37-django22
+  - TOXENV=py38-django18
+  - TOXENV=py38-django19
+  - TOXENV=py38-django110
+  - TOXENV=py38-django111
+  - TOXENV=py38-django20
+  - TOXENV=py38-django21
+  - TOXENV=py38-django22
   - TOXENV=flake8
