@@ -1,15 +1,21 @@
 language: python
-python:
-  - 2.7
-  - 3.4
-  - 3.5
-  - 3.6
-  - 3.7
-  - 3.8
 install:
   - pip install tox
+before_install:
+  - if [ "$TRAVIS_PYTHON_VERSION" == "3.8" ]; then apt-get -y install python3-distutils; fi
 script:
   - tox
+addons:
+  apt:
+    sources:
+      - deadsnakes
+    packages:
+      - python2.7
+      - python3.4
+      - python3.5
+      - python3.6
+      - python3.7
+      - python3.8
 env:
   - TOXENV=py27-django17
   - TOXENV=py27-django18
