@@ -8,15 +8,58 @@ python:
   - "3.7"
   - "3.8"
 
-env:
-  - DJANGO_VERSION=1.7
-  - DJANGO_VERSION=1.8
-  - DJANGO_VERSION=1.9
-  - DJANGO_VERSION=1.10
-  - DJANGO_VERSION=1.11
-  - DJANGO_VERSION=2.0
-  - DJANGO_VERSION=2.1
-  - DJANGO_VERSION=2.2
+jobs:
+  include:
+    - name: "Python 2.7"
+      python: "2.7"
+      env:
+        - DJANGO_VERSION=1.7
+        - DJANGO_VERSION=1.8
+        - DJANGO_VERSION=1.9
+        - DJANGO_VERSION=1.10
+        - DJANGO_VERSION=1.11
+    - name: "Python 3.4"
+      python: "3.4"
+      env:
+        - DJANGO_VERSION=1.7
+        - DJANGO_VERSION=1.8
+        - DJANGO_VERSION=1.9
+        - DJANGO_VERSION=1.10
+        - DJANGO_VERSION=1.11
+        - DJANGO_VERSION=2.0
+    - name: "Python 3.5"
+      python: "3.5"
+      env:
+        - DJANGO_VERSION=1.8
+        - DJANGO_VERSION=1.9
+        - DJANGO_VERSION=1.10
+        - DJANGO_VERSION=1.11
+        - DJANGO_VERSION=2.0
+        - DJANGO_VERSION=2.1
+        - DJANGO_VERSION=2.2
+    - name: "Python 3.6"
+      python: "3.6"
+      env:
+        - DJANGO_VERSION=1.8
+        - DJANGO_VERSION=1.9
+        - DJANGO_VERSION=1.10
+        - DJANGO_VERSION=1.11
+        - DJANGO_VERSION=2.0
+        - DJANGO_VERSION=2.1
+        - DJANGO_VERSION=2.2
+    - name: "Python 3.7"
+      python: "3.7"
+      env:
+        - DJANGO_VERSION=2.0
+        - DJANGO_VERSION=2.1
+        - DJANGO_VERSION=2.2
+    - name: "Python 3.8"
+      python: "3.8"
+      env:
+        - DJANGO_VERSION=2.0
+        - DJANGO_VERSION=2.1
+        - DJANGO_VERSION=2.2
+
 
 before_install:
     - export PYTHONPATH=$PYTHONPATH:$(pwd)
