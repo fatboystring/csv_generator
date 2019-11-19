@@ -6,9 +6,6 @@ python:
   - 3.6
   - 3.7
   - 3.8
-before_install:
-  - pip install -U pip
-  - if [ "$TRAVIS_PYTHON_VERSION" == "3.8" ]; then apt-get -y install python3-distutils; fi
 install:
   - pip install tox
 script:
