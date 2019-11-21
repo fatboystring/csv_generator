@@ -15,7 +15,7 @@ class CsvGeneratorColumnFormTestCase(CsvGeneratorTestCase):
     """
     def setUp(self):
         super(CsvGeneratorColumnFormTestCase, self).setUp()
-        self.form = CsvGeneratorColumnForm(csv_generator=self.generator_1)
+        self.form = CsvGeneratorColumnForm()
 
     def test_is_model_form(self):
         """
@@ -36,4 +36,3 @@ class CsvGeneratorColumnFormTestCase(CsvGeneratorTestCase):
         field = self.form.fields['model_field']
         self.assertIsInstance(field, forms.ChoiceField)
         self.assertEqual(field.label, 'Field')
-        self.assertEqual(set(field.choices), set(self.generator_1.all_attributes.items()))
