@@ -47,20 +47,6 @@ class CsvGeneratorColumnForm(forms.ModelForm):
     """
     model_field = forms.ChoiceField(label='Field', choices=[])
 
-    def __init__(self, *args, **kwargs):
-        """
-        Sets the choices for the model_field field
-
-        :param args: Default positional args
-        :type args: ()
-
-        :param kwargs: Default keyword args
-        :type kwargs: {}
-        """
-        generator = kwargs.pop('csv_generator')
-        super(CsvGeneratorColumnForm, self).__init__(*args, **kwargs)
-        self.fields['model_field'].choices = generator.all_attributes.items()
-
     class Meta(object):
         """
         Django properties
@@ -75,18 +61,14 @@ class CsvGeneratorColumnFormSet(forms.BaseInlineFormSet):
     """
     model = CsvGeneratorColumn
 
-    def get_form_kwargs(self, index):
+    @property
+    def model_field_choices(self):
         """
-        Adds the csv_generator instance to the form kwargs
+        Returns 'model' field choices for the formsets form
 
-        :param index: Form index
-        :type index: int
-
-        :return: Dict for form kwargs
+        :return: Tuple of model field choices
         """
-        kwargs = super(CsvGeneratorColumnFormSet, self).get_form_kwargs(index)
-        kwargs.update({'csv_generator': self.instance})
-        return kwargs
+        return self.instance.all_attributes.items()
 
     def _construct_form(self, i, **kwargs):
         """
@@ -101,10 +83,12 @@ class CsvGeneratorColumnFormSet(forms.BaseInlineFormSet):
 
         :return: Form instance
         """
-        kwargs.update({'csv_generator': self.instance})
-        return super(CsvGeneratorColumnFormSet, self)._construct_form(
-            i, **kwargs
-        )
+        form = super(
+            CsvGeneratorColumnFormSet,
+            self
+        )._construct_form(i, **kwargs)
+        form.fields['model_field'].choices = self.model_field_choices
+        return form
 
     @property
     def empty_form(self):
@@ -114,11 +98,6 @@ class CsvGeneratorColumnFormSet(forms.BaseInlineFormSet):
 
         :return: Form instance
         """
-        form = self.form(
-            auto_id=self.auto_id,
-            prefix=self.add_prefix('__prefix__'),
-            empty_permitted=True,
-            csv_generator=self.instance
-        )
-        self.add_fields(form, None)
+        form = super(CsvGeneratorColumnFormSet, self).empty_form
+        form.fields['model_field'].choices = self.model_field_choices
         return form
