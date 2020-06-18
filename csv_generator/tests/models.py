@@ -14,7 +14,9 @@ class TestModel(models.Model):
     """
     title = models.CharField(
         max_length=255,
-        verbose_name='Model title'
+        verbose_name='Model title',
+        blank=True,
+        null=True
     )
     text = models.TextField()
     other_model = models.ForeignKey(
