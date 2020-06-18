@@ -112,7 +112,7 @@ class CsvGeneratorColumnInline(admin.TabularInline):
     formset = CsvGeneratorColumnFormSet
     verbose_name = 'Column'
     verbose_name_plural = 'Columns'
-    extra = 1
+    extra = 0
 
 
 class CsvGeneratorAdmin(CsvExportAdmin):

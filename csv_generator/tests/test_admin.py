@@ -64,7 +64,7 @@ class CsvGeneratorColumnInlineTestCase(TestCase):
         """
         The class should provide 0 extra forms
         """
-        self.assertEqual(CsvGeneratorColumnInline.extra, 1)
+        self.assertEqual(CsvGeneratorColumnInline.extra, 0)
 
 
 class CsvGeneratorAdminTestCase(TestCase):
