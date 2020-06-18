@@ -50,6 +50,21 @@ class BaseDescriptorTestCase(CsvGeneratorTestCase):
             instance.resolve(self.generator_1, 'title')
         )
 
+    def test_resolve_returns_none(self):
+        """
+        The resolve method should return none
+        """
+        instance = BaseDescriptor(title='title')
+        self.assertEqual('None', instance.resolve(TestModel(title=None), 'title'))
+
+    @override_settings(CSV_GENERATOR_VALUE_OVERRIDES={None: ''})
+    def test_resolve_returns_empty_string(self):
+        """
+        The resolve method should return an empty string
+        """
+        instance = BaseDescriptor(title='title')
+        self.assertEqual('', instance.resolve(TestModel(title=None), 'title'))
+
     def test_resolve_calls_method(self):
         """
         The resolve method should return the attribute

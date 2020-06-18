@@ -44,6 +44,14 @@ class BaseDescriptor(dict):
         value = getattr(instance, attr_name, '')
         if callable(value):
             value = value()
+
+        # We allow certain values to be overridden on a case by case basis
+        # this allows us, for example, to set None values to an empty string
+        # by declaring CSV_GENERATOR_VALUE_OVERRIDES = {None: ''} in our
+        # settings file.  For backwards compatibility this will fall back to
+        # using the raw value where the overrides have not been specified
+        value_overrides = getattr(settings, 'CSV_GENERATOR_VALUE_OVERRIDES', {})
+        value = value_overrides.get(value, value)
         return '{0}'.format(value)
 
     @classmethod
