@@ -5,6 +5,7 @@ Forms for the csv_generator app
 from __future__ import unicode_literals
 from csv_generator.models import CsvGenerator, CsvGeneratorColumn
 from django import forms
+from django.contrib.contenttypes.models import ContentType
 
 
 class SelectCsvGeneratorForm(forms.Form):
@@ -33,6 +34,10 @@ class CsvGeneratorForm(forms.ModelForm):
     """
     Model form for CsvGenerator
     """
+    content_type = forms.ModelChoiceField(
+        queryset=ContentType.objects.all().order_by('model')
+    )
+
     class Meta(object):
         """
         Django properties

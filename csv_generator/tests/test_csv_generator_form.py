@@ -24,3 +24,13 @@ class CsvGeneratorFormTestCase(TestCase):
         The form should use the correct model
         """
         self.assertEqual(CsvGeneratorForm._meta.model, CsvGenerator)
+
+    def test_content_type_choices_ordered(self):
+        """
+        Content type choices should be ordered alphabetically
+        """
+        field = CsvGeneratorForm().fields['content_type']
+        previous_name = ''
+        for instance in field.queryset:
+            self.assertTrue(previous_name < instance.model)
+            previous_name = instance.model
