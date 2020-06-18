@@ -1,4 +1,4 @@
-[![Django CSV generator on pypi](https://img.shields.io/badge/pypi-0.8.0-green.svg)](https://pypi.python.org/pypi/csv_generator)
+[![Django CSV generator on pypi](https://img.shields.io/badge/pypi-0.9.1-green.svg)](https://pypi.python.org/pypi/csv_generator)
 ![MIT license](https://img.shields.io/badge/licence-MIT-blue.svg)
 ![Build status](https://travis-ci.org/fatboystring/csv_generator.svg?branch=master)
 
@@ -200,3 +200,4 @@ response = generator.generate(response, queryset)
 - 0.8.1: Support for django 2.1, 2.2 and python 3.7, 3.8
 - 0.8.2: Fix regression where form would not instantiate correctly in django admin
 - 0.9.0: Ensure content type options in admin forms are ordered by model name.  Allow attribute values to be overridden at a global level.
+- 0.9.1: Fix bug where an extra `CsvGeneratorColumn` record was automatically added when editing an existing `CsvGenerator` model instance. 
