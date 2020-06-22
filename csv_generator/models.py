@@ -12,7 +12,6 @@ from csv_generator.utils import get_csv_writer_class
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models
-from django.utils.encoding import python_2_unicode_compatible
 
 
 class CsvGeneratorQueryset(models.QuerySet):
