@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
 """
 Tests the attribute_descriptors for the csv_generator
 """
-from __future__ import unicode_literals
 from csv_generator.attribute_descriptors import (
     DescriptorException,
     BaseDescriptor,

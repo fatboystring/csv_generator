@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-from __future__ import unicode_literals
 from csv_generator import __version__
 from setuptools import setup, find_packages
 

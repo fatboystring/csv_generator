@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
 """
 csv_generator app model factories
 """
-from __future__ import unicode_literals
 from csv_generator.models import CsvGenerator, CsvGeneratorColumn
 from csv_generator.tests.models import TestModel, TestModel2
 from django.contrib.contenttypes.models import ContentType

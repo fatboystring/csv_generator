@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
 """
 Attribute descriptors for the csv_generator app
 """
-from __future__ import unicode_literals
 from django.conf import settings
 from django.db import models
 
@@ -257,13 +255,7 @@ class ForeignKeyDescriptor(BaseDescriptor):
 
 class NoopDescriptor(BaseDescriptor):
     """
-    Class method for creating a descriptor instance
-    for a given CsvGenerator model instance
-
-    :param model: CsvGenerator model
-    :type model: csv_generator.models.CsvGenerator
-
-    :return: AttributeDescriptor instance
+    Descriptor class for rendering an empty string
     """
     @classmethod
     def for_model(cls, model):

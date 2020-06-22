@@ -10,14 +10,8 @@ A configurable CSV Generator for Django
 
 Supports the following versions of Django:
 
- - Django 1.7
- - Django 1.8
- - Django 1.9
- - Django 1.10
- - Django 1.11
- - Django 2.0
- - Django 2.1
  - Django 2.2
+ - Django 3.0
 
 ## Installation
 
@@ -26,12 +20,6 @@ Supports the following versions of Django:
 Add 'csv_generator' to the `INSTALLED_APPS` setting in your django project
 
 `INSTALLED_APPS += ('csv_generator',)`
-
-### Pre Django 1.9
-
-`python manage.py syncdb`
-
-### Django 1.9 and above
 
 `python manage.py migrate`
 
@@ -201,3 +189,4 @@ response = generator.generate(response, queryset)
 - 0.8.2: Fix regression where form would not instantiate correctly in django admin
 - 0.9.0: Ensure content type options in admin forms are ordered by model name.  Allow attribute values to be overridden at a global level.
 - 0.9.1: Fix bug where an extra `CsvGeneratorColumn` record was automatically added when editing an existing `CsvGenerator` model instance. 
+- 1.0.0: Removed support for older, unsupported versions of django.  Removed compatibility fixes and add support for django 3.0

@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
 """
 Tests the csv_generator CsvGeneratorColumn Form
 """
-from __future__ import unicode_literals
 from csv_generator.admin import CsvGeneratorColumnInline, CsvGeneratorAdmin
 from csv_generator.admin import CsvExportAdmin, ContentTypeListFilter
 from csv_generator.forms import CsvGeneratorForm
