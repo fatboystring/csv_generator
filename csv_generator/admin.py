@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
 """
 Admin for the csv_generator app
 """
-from __future__ import unicode_literals
 from csv_generator.forms import CsvGeneratorForm, CsvGeneratorColumnForm
 from csv_generator.forms import CsvGeneratorColumnFormSet
 from csv_generator.models import CsvGenerator, CsvGeneratorColumn

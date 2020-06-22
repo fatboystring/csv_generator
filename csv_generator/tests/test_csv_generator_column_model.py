@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
 """
 Tests the csv_generator CsvGeneratorColumn model
 """
-from __future__ import unicode_literals
 from csv_generator.models import CsvGenerator, CsvGeneratorColumn
 from csv_generator.tests.models import TestModel
 from csv_generator.tests.utils import CsvGeneratorColumnTestCase

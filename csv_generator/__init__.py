@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 """
 Configurable CSV Generator app for Django
 """
-VERSION = ('0', '9', '1')
+VERSION = ('1', '0', '0')
 
 __version__ = '.'.join(VERSION)

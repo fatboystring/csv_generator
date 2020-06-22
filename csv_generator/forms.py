@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
 """
 Forms for the csv_generator app
 """
-from __future__ import unicode_literals
 from csv_generator.models import CsvGenerator, CsvGeneratorColumn
 from django import forms
 from django.contrib.contenttypes.models import ContentType

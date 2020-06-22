@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
 """
 Models for the csv_generator app
 """
-from __future__ import unicode_literals
 from csv_generator.attribute_descriptors import (
     FieldDescriptor,
     AttributeDescriptor,
@@ -14,7 +12,6 @@ from csv_generator.utils import get_csv_writer_class
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models
-from django.utils.encoding import python_2_unicode_compatible
 
 
 class CsvGeneratorQueryset(models.QuerySet):
@@ -58,7 +55,6 @@ class CsvGeneratorQueryset(models.QuerySet):
         return self.for_content_type(ContentType.objects.get_for_model(model))
 
 
-@python_2_unicode_compatible
 class CsvGenerator(models.Model):
     """
     Model for storing a CSV Generator profile
