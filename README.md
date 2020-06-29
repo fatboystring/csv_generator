@@ -190,3 +190,4 @@ response = generator.generate(response, queryset)
 - 0.9.0: Ensure content type options in admin forms are ordered by model name.  Allow attribute values to be overridden at a global level.
 - 0.9.1: Fix bug where an extra `CsvGeneratorColumn` record was automatically added when editing an existing `CsvGenerator` model instance. 
 - 1.0.0: Removed support for older, unsupported versions of django.  Removed compatibility fixes and add support for django 3.0
+- 1.0.1: Fixed bug with 'Take me back' button in django admin export form that caused csv file to be downloaded again.
