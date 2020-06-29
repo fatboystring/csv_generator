@@ -4,7 +4,23 @@
 {% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} csv_generator-select{% endblock %}
 
 
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}" />{% endblock %}
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}" />
+    <style>
+        .submit-row .button.cancel-link {
+            display: inline-block;
+            vertical-align: middle;
+            height: 15px;
+            line-height: 15px;
+            background: #ddd;
+            border-radius: 4px;
+            padding: 10px 15px;
+            color: #333;
+            margin: 0 0 0 10px;
+        }
+    </style>
+{% endblock %}
 
 
 {% block breadcrumbs %}
@@ -39,7 +55,7 @@
 
         <div class="submit-row">
             <input type="submit" value="{% trans "Export" %}" class="default" />
-            <input type="submit" onclick="window.history.back(); return false;" value="{% trans "Take me back" %}" />
+            <a href="{% url opts|admin_urlname:'changelist' %}" class="button cancel-link">{% trans "Take me back" %}</a>
         </div>
     </form>
 {% endblock %}

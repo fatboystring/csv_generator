@@ -6,6 +6,7 @@ from csv_generator.models import CsvGenerator
 from csv_generator.views import CsvExportView
 from csv_generator.tests.models import TestModel
 from csv_generator.tests.utils import CsvGeneratorTestCase
+from django.contrib import admin
 from django.http import HttpResponse
 from django.test import RequestFactory
 from django.views.generic import FormView
@@ -52,6 +53,10 @@ class CsvExportViewTestCase(CsvGeneratorTestCase):
         self.assertIsInstance(
             response.context_data['form'],
             SelectCsvGeneratorForm
+        )
+        self.assertIn(
+            '<a href="/admin/tests/testmodel/" class="button cancel-link">Take me back</a>',
+            response.rendered_content
         )
 
     @patch('csv_generator.views.CsvExportView.render_csv_to_response')
@@ -115,3 +120,6 @@ class CsvExportViewTestCase(CsvGeneratorTestCase):
         self.view(request, generators=generators, queryset=queryset)
         self.assertIsInstance(patched.call_args[0][0], HttpResponse)
         self.assertEqual(patched.call_args[0][1], queryset)
+
+
+admin.site.register(TestModel)
