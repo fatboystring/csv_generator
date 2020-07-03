@@ -139,7 +139,7 @@ class CsvExportAdminTestCase(CsvGeneratorTestCase):
     def setUp(self):
         super(CsvExportAdminTestCase, self).setUp()
         self.admin = CsvExportAdmin(CsvGenerator, Mock())
-        self.request = RequestFactory().post('/fake-path/')
+        self.request = RequestFactory().post('/fake-path/?foo=bar')
         self.instance = CsvGeneratorFactory.create()
 
     def test_extends_model_admin(self):
@@ -161,7 +161,7 @@ class CsvExportAdminTestCase(CsvGeneratorTestCase):
         """
         patched.return_value = Mock()
         self.admin.export_to_csv_view(self.request, foo='bar')
-        patched.return_value.assert_called_with(self.request, foo='bar')
+        patched.return_value.assert_called_with(self.request, foo='bar', preserved_filters='foo=bar')
 
     @patch('csv_generator.admin.CsvGenerator.objects.for_model')
     @patch('csv_generator.admin.CsvExportAdmin.export_to_csv_view')

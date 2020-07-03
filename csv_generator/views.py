@@ -71,5 +71,6 @@ class CsvExportView(FormView):
             'form': form,
             'opts': queryset.model._meta,
             'queryset': queryset,
-            'action_checkbox_name': admin.helpers.ACTION_CHECKBOX_NAME
+            'action_checkbox_name': admin.helpers.ACTION_CHECKBOX_NAME,
+            'preserved_filters': self.kwargs.get('preserved_filters', '')
         })

@@ -191,3 +191,4 @@ response = generator.generate(response, queryset)
 - 0.9.1: Fix bug where an extra `CsvGeneratorColumn` record was automatically added when editing an existing `CsvGenerator` model instance. 
 - 1.0.0: Removed support for older, unsupported versions of django.  Removed compatibility fixes and add support for django 3.0
 - 1.0.1: Fixed bug with 'Take me back' button in django admin export form that caused csv file to be downloaded again.
+- 1.0.2: Ensure changelist filters are persisted when the 'Take me back' button on the csv export view is clicked 

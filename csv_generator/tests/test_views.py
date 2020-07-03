@@ -43,8 +43,8 @@ class CsvExportViewTestCase(CsvGeneratorTestCase):
         """
         queryset = TestModel.objects.all()
         generators = CsvGenerator.objects.for_model(TestModel)
-        request = self.factory.post('/fake-path/')
-        response = self.view(request, generators=generators, queryset=queryset)
+        request = self.factory.post('/fake-path/?foo=bar')
+        response = self.view(request, generators=generators, queryset=queryset, preserved_filters='foo=bar')
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed('admin/csv_generator/csv_generator_select.html')
@@ -55,7 +55,7 @@ class CsvExportViewTestCase(CsvGeneratorTestCase):
             SelectCsvGeneratorForm
         )
         self.assertIn(
-            '<a href="/admin/tests/testmodel/" class="button cancel-link">Take me back</a>',
+            '<a href="/admin/tests/testmodel/?foo=bar" class="button cancel-link">Take me back</a>',
             response.rendered_content
         )
 
