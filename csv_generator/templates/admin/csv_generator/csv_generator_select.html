@@ -55,7 +55,7 @@
 
         <div class="submit-row">
             <input type="submit" value="{% trans "Export" %}" class="default" />
-            <a href="{% url opts|admin_urlname:'changelist' %}" class="button cancel-link">{% trans "Take me back" %}</a>
+            <a href="{% url opts|admin_urlname:'changelist' %}?{{ preserved_filters }}" class="button cancel-link">{% trans "Take me back" %}</a>
         </div>
     </form>
 {% endblock %}

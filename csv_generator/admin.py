@@ -66,8 +66,7 @@ class CsvExportAdmin(admin.ModelAdmin):
     """
     actions = ['export_to_csv']
 
-    @staticmethod
-    def export_to_csv_view(request, **kwargs):
+    def export_to_csv_view(self, request, **kwargs):
         """
         Helper method for rendering a view to export a queryset to csv
 
@@ -79,6 +78,7 @@ class CsvExportAdmin(admin.ModelAdmin):
 
         :return: HttpResponse instance
         """
+        kwargs['preserved_filters'] = request.GET.urlencode()
         return CsvExportView.as_view()(request, **kwargs)
 
     def export_to_csv(self, request, queryset):
